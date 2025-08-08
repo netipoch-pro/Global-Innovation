@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Innovation Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #007bff;
+            --secondary-color: #6c757d;
+            --success-color: #28a745;
+            --info-color: #17a2b8;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+        }
+        
+        body {
+            background-color: #f8f9fa;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), #0056b3);
+            color: white;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+        }
+        
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            margin-bottom: 1.5rem;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .innovation-card {
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .prediction-card {
+            border-left: 4px solid var(--warning-color);
+        }
+        
+        .trend-up {
+            color: var(--success-color);
+        }
+        
+        .trend-down {
+            color: var(--danger-color);
+        }
+        
+        .sector-badge {
+            font-size: 0.8rem;
+        }
+        
+        .search-section {
+            background: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            text-align: center;
+            padding: 1.5rem;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--secondary-color);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1><i class="bi bi-globe"></i> Global Innovation Dashboard</h1>
+                    <p class="lead">ติดตามการเคลื่อนไหวของนวัตกรรมโลกและการประเมินมูลค่าทางเศรษฐกิจ</p>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-light" id="refreshBtn">
+                            <i class="bi bi-arrow-repeat"></i> รีเฟรชข้อมูล
+                        </button>
+                        <button type="button" class="btn btn-outline-light" id="themeToggle">
+                            <i class="bi bi-moon"></i> ธีมมืด
+                        </button>
+                        <button type="button" class="btn btn-outline-light" id="saveImageBtn">
+                            <i class="bi bi-image"></i> บันทึกภาพ
+                        </button>
+                        <button type="button" class="btn btn-outline-light" id="savePdfBtn">
+                            <i class="bi bi-file-earmark-pdf"></i> บันทึก PDF
+                        </button>
+                    </div>
+                    <div class="mt-2">
+                        <small class="text-light">อัพเดทล่าสุด: <span id="lastUpdate">กำลังโหลด...</span></small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Stats Overview -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card stat-card">
+                    <div class="stat-number">10</div>
+                    <div class="stat-label">นวัตกรรมปัจจุบัน</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stat-card">
+                    <div class="stat-number">5</div>
+                    <div class="stat-label">การคาดการณ์อนาคต</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stat-card">
+                    <div class="stat-number">$1.2T</div>
+                    <div class="stat-label">มูลค่าทางเศรษฐกิจ</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stat-card">
+                    <div class="stat-number">7</div>
+                    <div class="stat-label">สาขาอุตสาหกรรม</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search Section -->
+        <div class="search-section">
+            <h3><i class="bi bi-search"></i> ค้นหานวัตกรรม</h3>
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" id="searchInput" placeholder="ค้นหาจากชื่อ คำอธิบาย หรือสาขา...">
+                        <button class="btn btn-primary" type="button" id="searchBtn">
+                            <i class="bi bi-search"></i> ค้นหา
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <select class="form-select" id="sectorFilter">
+                        <option selected>ทุกสาขา</option>
+                        <option>Healthcare</option>
+                        <option>Technology</option>
+                        <option>Agriculture</option>
+                        <option>Energy</option>
+                        <option>Transportation</option>
+                        <option>Environment</option>
+                        <option>Logistics</option>
+                    </select>
+                </div>
+            </div>
+            <div id="searchResults" class="mt-3"></div>
+        </div>
+
+        <!-- Current Innovations -->
+        <section class="mb-5">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2><i class="bi bi-lightning"></i> นวัตกรรมปัจจุบัน</h2>
+                <div>
+                    <button class="btn btn-sm btn-outline-primary">เรียงตามมูลค่า</button>
+                    <button class="btn btn-sm btn-outline-secondary">เรียงตามชื่อ</button>
+                    <button class="btn btn-sm btn-outline-success" onclick="toggleGrowthChart()">แสดง/ซ่อน กราฟ</button>
+                </div>
+            </div>
+            
+            <div class="row" id="innovationsContainer">
+                <% innovations.forEach(innovation => { %>
+                <div class="col-md-6 col-lg-4">
+                    <div class="card innovation-card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title"><%= innovation.name %></h5>
+                            <span class="badge bg-primary sector-badge mb-2"><%= innovation.sector %></span>
+                            <p class="card-text"><%= innovation.description %></p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span class="text-muted">มูลค่า:</span>
+                                    <strong class="text-success"><%= innovation.economicValue %></strong>
+                                </div>
+                                <span class="trend-up">
+                                    <i class="bi bi-arrow-up"></i> <%= innovation.trend %>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <% }); %>
+            </div>
+            
+            <!-- Growth Chart for Current Innovations -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="bi bi-bar-chart"></i> การเติบโตของนวัตกรรมปัจจุบัน</h5>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="innovationGrowthChart" height="100"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Future Predictions -->
+        <section>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2><i class="bi bi-graph-up"></i> การประเมินการเคลื่อนไหวของนวัตกรรม 4-5 ปีข้างหน้า</h2>
+                <div>
+                    <span class="badge bg-warning text-dark">AI-Powered Predictions</span>
+                    <button class="btn btn-sm btn-outline-warning ms-2" onclick="togglePredictionsChart()">แสดง/ซ่อน กราฟ</button>
+                </div>
+            </div>
+            
+            <div class="row" id="predictionsContainer">
+                <% predictions.forEach(prediction => { %>
+                <div class="col-md-6 col-lg-4">
+                    <div class="card prediction-card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title"><%= prediction.name %></h5>
+                            <span class="badge bg-warning text-dark sector-badge mb-2"><%= prediction.sector %></span>
+                            <p class="card-text"><%= prediction.description %></p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span class="text-muted">มูลค่าที่คาดการณ์:</span>
+                                    <strong class="text-warning"><%= prediction.predictedValue %></strong>
+                                </div>
+                                <span class="text-muted"><%= prediction.timeframe %></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <% }); %>
+            </div>
+            
+            <!-- Future Predictions Chart -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5><i class="bi bi-graph-up-arrow"></i> การเคลื่อนไหวของนวัตกรรมในอนาคต 4-5 ปี</h5>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="futurePredictionsChart" height="100"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light mt-5 py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="bi bi-globe"></i> Global Innovation Tracker</h5>
+                    <p>ระบบติดตามและวิเคราะห์การเคลื่อนไหวของนวัตกรรมโลก</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p>ข้อมูลอัปเดตล่าสุด: <%= new Date().toLocaleDateString('th-TH') %></p>
+                    <p>Powered by AI Gemini</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Theme toggle functionality
+        document.getElementById('themeToggle').addEventListener('click', function() {
+            document.body.classList.toggle('bg-dark');
+            document.body.classList.toggle('text-light');
+            
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                card.classList.toggle('bg-dark');
+                card.classList.toggle('text-light');
+            });
+            
+            const isDark = document.body.classList.contains('bg-dark');
+            this.innerHTML = isDark ? 
+                '<i class="bi bi-sun"></i> ธีมสว่าง' : 
+                '<i class="bi bi-moon"></i> ธีมมืด';
+        });
+        
+        // Refresh button functionality
+        document.getElementById('refreshBtn').addEventListener('click', function() {
+            this.innerHTML = '<i class="bi bi-arrow-repeat"></i> กำลังรีเฟรช...';
+            this.disabled = true;
+            
+            // Simulate refresh
+            setTimeout(() => {
+                this.innerHTML = '<i class="bi bi-arrow-repeat"></i> รีเฟรชข้อมูล';
+                this.disabled = false;
+                alert('ข้อมูลได้รับการอัปเดตแล้ว');
+                updateLastUpdateTime(); // Update the last update time
+            }, 1000);
+        });
+        
+        // Update last update time
+        function updateLastUpdateTime() {
+            const now = new Date();
+            document.getElementById('lastUpdate').textContent = now.toLocaleString('th-TH');
+        }
+        
+        // Auto update every 15-20 minutes (900000-1200000 ms)
+        setInterval(updateLastUpdateTime, 900000); // 15 minutes
+        
+        // Initialize last update time
+        updateLastUpdateTime();
+        
+        // Search functionality
+        document.getElementById('searchBtn').addEventListener('click', function() {
+            const query = document.getElementById('searchInput').value;
+            if (query.trim() !== '') {
+                // In a real implementation, this would call the API
+                document.getElementById('searchResults').innerHTML = 
+                    '<div class="alert alert-info">กำลังค้นหา "' + query + '" ด้วย AI Gemini...</div>';
+                
+                // Simulate API call
+                setTimeout(() => {
+                    document.getElementById('searchResults').innerHTML = 
+                        '<div class="alert alert-success">พบผลลัพธ์ 3 รายการสำหรับ "' + query + '"</div>';
+                }, 1500);
+            }
+        });
+        
+        // Initialize tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        // Initialize tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+        
+        // Create growth chart for current innovations
+        document.addEventListener('DOMContentLoaded', function() {
+            // Prepare data for the chart
+            const innovationNames = [
+                "AI-Powered Drug Discovery",
+                "Quantum Computing Breakthrough",
+                "Vertical Farming Systems",
+                "Fusion Energy Commercialization",
+                "Brain-Computer Interfaces",
+                "Autonomous Vehicle Networks",
+                "Carbon Capture Megastructures",
+                "Space-Based Solar Power",
+                "Personalized Genetic Medicine",
+                "Blockchain for Supply Chains"
+            ];
+            
+            // Generate random growth values for demonstration
+            const growthValues = innovationNames.map(() => Math.floor(Math.random() * 100) + 10);
+            
+            const ctx = document.getElementById('innovationGrowthChart').getContext('2d');
+            const innovationGrowthChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: innovationNames,
+                    datasets: [{
+                        label: 'อัตราการเติบโต (%)',
+                        data: growthValues,
+                        backgroundColor: 'rgba(0, 123, 255, 0.7)',
+                        borderColor: 'rgba(0, 123, 255, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'อัตราการเติบโต (%)'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'นวัตกรรม'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: 'การเติบโตของนวัตกรรมปัจจุบัน'
+                        }
+                    }
+                }
+            });
+            
+            // Create future predictions chart
+            const futurePredictionNames = [
+                "Neural Lace Technology",
+                "Molecular Assemblers",
+                "Atmospheric Water Generation",
+                "Holographic Communication",
+                "Biological Age Reversal"
+            ];
+            
+            // Generate random economic values for demonstration (in billions)
+            const economicValues = [500, 1200, 300, 250, 800];
+            
+            const ctx2 = document.getElementById('futurePredictionsChart').getContext('2d');
+            const futurePredictionsChart = new Chart(ctx2, {
+                type: 'line',
+                data: {
+                    labels: futurePredictionNames,
+                    datasets: [{
+                        label: 'มูลค่าทางเศรษฐกิจที่คาดการณ์ (พันล้านดอลลาร์)',
+                        data: economicValues,
+                        fill: true,
+                        backgroundColor: 'rgba(255, 193, 7, 0.2)',
+                        borderColor: 'rgba(255, 193, 7, 1)',
+                        tension: 0.4,
+                        pointBackgroundColor: 'rgba(255, 193, 7, 1)',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'มูลค่าทางเศรษฐกิจ (พันล้านดอลลาร์)'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'นวัตกรรมในอนาคต'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: 'การเคลื่อนไหวของนวัตกรรมในอนาคต 4-5 ปี'
+                        }
+                    }
+                }
+            });
+       });
+       
+       // Toggle functions for charts
+       function toggleGrowthChart() {
+           const chartContainer = document.getElementById('innovationGrowthChart').closest('.card');
+           chartContainer.style.display = chartContainer.style.display === 'none' ? 'block' : 'none';
+       }
+       
+       function togglePredictionsChart() {
+           const chartContainer = document.getElementById('futurePredictionsChart').closest('.card');
+           chartContainer.style.display = chartContainer.style.display === 'none' ? 'block' : 'none';
+       }
+       
+       // Save as image functionality
+       document.getElementById('saveImageBtn').addEventListener('click', function() {
+           html2canvas(document.body).then(canvas => {
+               const link = document.createElement('a');
+               link.download = 'global-innovation-dashboard.png';
+               link.href = canvas.toDataURL('image/png');
+               link.click();
+           });
+       });
+       
+       // Save as PDF functionality
+       document.getElementById('savePdfBtn').addEventListener('click', function() {
+           // Get jsPDF from the global scope
+           const { jsPDF } = window.jspdf;
+           
+           html2canvas(document.body).then(canvas => {
+               const imgData = canvas.toDataURL('image/png');
+               const pdf = new jsPDF('p', 'mm', 'a4');
+               const imgWidth = 210; // A4 width in mm
+               const pageHeight = 297; // A4 height in mm
+               const imgHeight = canvas.height * imgWidth / canvas.width;
+               let heightLeft = imgHeight;
+               let position = 0;
+               
+               pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+               heightLeft -= pageHeight;
+               
+               // Add new pages if content is taller than one page
+               while (heightLeft >= 0) {
+                   position = heightLeft - imgHeight;
+                   pdf.addPage();
+                   pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                   heightLeft -= pageHeight;
+               }
+               
+               pdf.save('global-innovation-dashboard.pdf');
+           });
+       });
+   </script>
+</body>
+</html>
