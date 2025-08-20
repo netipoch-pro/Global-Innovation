@@ -151,3 +151,8 @@ app.listen(PORT, () => {
     console.log(`📊 Dashboard: http://localhost:${PORT}`);
     console.log(`🔧 Environment: ${process.env.NODE_ENV || 'development'}`);
 });
+// เพิ่มใน server.js
+app.use(cors({
+    origin: ['https://netipoch-pro.github.io', 'http://localhost:*'],
+    credentials: true
+}));
