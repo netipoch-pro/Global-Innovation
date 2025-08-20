@@ -715,6 +715,26 @@
                 spinner.classList.remove('active');
                 
                 // Show notification
+        function showNotification(message, type = 'info') {
+            const colors = {
+                success: 'bg-success',
+                error: 'bg-danger',
+                warning: 'bg-warning',
+                info: 'bg-info'
+            };
+            
+            const notification = document.createElement('div');
+            notification.className = `position-fixed top-0 start-50 translate-middle-x mt-3 alert ${colors[type]} text-white`;
+            notification.style.zIndex = '9999';
+            notification.innerHTML = `
+                <i class="bi bi-check-circle"></i> ${message}
+            `;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
                 showNotification('ข้อมูลได้รับการอัพเดทแล้ว', 'success');
             }, 1000);
         }
@@ -760,8 +780,3 @@
         }
 
         // Show notification
-        // Load on page ready
-        document.addEventListener('DOMContentLoaded', loadInnovations);
-    </script>
-</body>
-</html>
