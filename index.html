@@ -16,11 +16,20 @@
             --info-color: #17a2b8;
             --warning-color: #ffc107;
             --danger-color: #dc3545;
+            --dark-bg: #121212;
+            --dark-card: #1e1e1e;
+            --dark-text: #ffffff;
         }
         
         body {
             background-color: #f8f9fa;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: all 0.3s ease;
+        }
+        
+        body.dark-theme {
+            background-color: var(--dark-bg);
+            color: var(--dark-text);
         }
         
         .header {
@@ -39,9 +48,19 @@
             border: none;
         }
         
+        .dark-theme .card {
+            background-color: var(--dark-card);
+            color: var(--dark-text);
+            box-shadow: 0 4px 12px rgba(255,255,255,0.1);
+        }
+        
         .card:hover {
             transform: translateY(-5px);
             box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+        
+        .dark-theme .card:hover {
+            box-shadow: 0 8px 20px rgba(255,255,255,0.2);
         }
         
         .innovation-card {
@@ -78,11 +97,20 @@
             margin-bottom: 2rem;
         }
         
+        .dark-theme .search-section {
+            background: var(--dark-card);
+        }
+        
         .stat-card {
             text-align: center;
             padding: 1.5rem;
             background: white;
             transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .dark-theme .stat-card {
+            background: var(--dark-card);
         }
         
         .stat-card:hover {
@@ -100,6 +128,11 @@
             font-weight: bold;
             color: var(--primary-color);
             margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .dark-theme .stat-number {
+            color: #4da6ff;
         }
         
         .stat-label {
@@ -109,6 +142,10 @@
             letter-spacing: 1px;
         }
         
+        .dark-theme .stat-label {
+            color: #cccccc;
+        }
+        
         .loading-spinner {
             display: none;
             position: fixed;
@@ -116,6 +153,9 @@
             left: 50%;
             transform: translate(-50%, -50%);
             z-index: 9999;
+            background: rgba(0,0,0,0.8);
+            padding: 2rem;
+            border-radius: 15px;
         }
         
         .loading-spinner.active {
@@ -134,6 +174,12 @@
             align-items: center;
             gap: 10px;
             z-index: 1000;
+            transition: all 0.3s ease;
+        }
+        
+        .dark-theme .api-status {
+            background: var(--dark-card);
+            color: var(--dark-text);
         }
         
         .status-dot {
@@ -174,21 +220,113 @@
             box-shadow: 0 4px 12px rgba(0,123,255,0.4);
             color: white;
         }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 10px;
+            z-index: 9999;
+            animation: slideIn 0.5s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        
+        .export-section {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+        }
+        
+        .dark-theme .export-section {
+            background: var(--dark-card);
+        }
+        
+        .modal-content {
+            border-radius: 15px;
+            border: none;
+        }
+        
+        .dark-theme .modal-content {
+            background: var(--dark-card);
+            color: var(--dark-text);
+        }
+        
+        .dark-theme .modal-header {
+            border-bottom-color: #444;
+        }
+        
+        .dark-theme .form-control {
+            background: #333;
+            color: white;
+            border-color: #555;
+        }
+        
+        .dark-theme .form-select {
+            background: #333;
+            color: white;
+            border-color: #555;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .sector-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        
+        .sector-stat-item {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(0,123,255,0.1);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .sector-stat-item:hover {
+            background: rgba(0,123,255,0.2);
+            transform: scale(1.05);
+        }
+        
+        .dark-theme .sector-stat-item {
+            background: rgba(77,166,255,0.1);
+        }
+        
+        .dark-theme .sector-stat-item:hover {
+            background: rgba(77,166,255,0.2);
+        }
     </style>
-    <!-- เพิ่มก่อน </head> -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=GA_ID"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'GA_ID');
-</script>
 </head>
 <body>
     <!-- Loading Spinner -->
     <div class="loading-spinner">
-        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
-            <span class="visually-hidden">Loading...</span>
+        <div class="text-center">
+            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <div class="mt-3 text-white">กำลังโหลดข้อมูล...</div>
         </div>
     </div>
 
@@ -203,15 +341,18 @@
                     <p class="lead">ติดตามการเคลื่อนไหวของนวัตกรรมโลกและการประเมินมูลค่าทางเศรษฐกิจ</p>
                 </div>
                 <div class="col-md-4 text-md-end">
-                    <div class="btn-group" role="group">
+                    <div class="btn-group mb-2" role="group">
                         <button type="button" class="btn btn-light" onclick="refreshData()">
                             <i class="bi bi-arrow-repeat"></i> รีเฟรชข้อมูล
                         </button>
                         <button type="button" class="btn btn-outline-light" onclick="toggleTheme()">
-                            <i class="bi bi-moon"></i> ธีมมืด
+                            <i class="bi bi-moon" id="themeIcon"></i> <span id="themeText">ธีมมืด</span>
+                        </button>
+                        <button type="button" class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#exportModal">
+                            <i class="bi bi-download"></i> ส่งออก
                         </button>
                     </div>
-                    <div class="mt-2">
+                    <div>
                         <small class="text-light">อัพเดทล่าสุด: <span id="lastUpdate">กำลังโหลด...</span></small>
                     </div>
                 </div>
@@ -223,27 +364,39 @@
         <!-- Stats Overview -->
         <div class="row mb-4">
             <div class="col-md-3 col-sm-6 mb-3">
-                <div class="card stat-card">
+                <div class="card stat-card" onclick="animateStatCard(this)">
                     <div class="stat-number" id="totalInnovations">10</div>
                     <div class="stat-label">นวัตกรรมปัจจุบัน</div>
                 </div>
             </div>
             <div class="col-md-3 col-sm-6 mb-3">
-                <div class="card stat-card">
+                <div class="card stat-card" onclick="animateStatCard(this)">
                     <div class="stat-number" id="totalPredictions">5</div>
                     <div class="stat-label">การคาดการณ์อนาคต</div>
                 </div>
             </div>
             <div class="col-md-3 col-sm-6 mb-3">
-                <div class="card stat-card">
+                <div class="card stat-card" onclick="animateStatCard(this)">
                     <div class="stat-number" id="totalValue">$1.2T</div>
                     <div class="stat-label">มูลค่าทางเศรษฐกิจ</div>
                 </div>
             </div>
             <div class="col-md-3 col-sm-6 mb-3">
-                <div class="card stat-card">
-                    <div class="stat-number" id="totalSectors">7</div>
+                <div class="card stat-card" onclick="animateStatCard(this)">
+                    <div class="stat-number" id="totalSectors">9</div>
                     <div class="stat-label">สาขาอุตสาหกรรม</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sector Statistics -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5><i class="bi bi-pie-chart"></i> สถิติตามสาขาอุตสาหกรรม</h5>
+            </div>
+            <div class="card-body">
+                <div class="sector-stats" id="sectorStats">
+                    <!-- Sector statistics will be inserted here -->
                 </div>
             </div>
         </div>
@@ -252,17 +405,17 @@
         <div class="search-section">
             <h3><i class="bi bi-search"></i> ค้นหานวัตกรรม</h3>
             <div class="row">
-                <div class="col-md-8">
+                <div class="col-md-6">
                     <div class="input-group mb-3">
                         <input type="text" class="form-control form-control-lg" id="searchInput" 
                                placeholder="ค้นหาจากชื่อ คำอธิบาย หรือสาขา..." 
-                               onkeyup="searchInnovations()">
+                               onkeyup="handleSearchInput(event)">
                         <button class="btn btn-gradient btn-lg" type="button" onclick="searchInnovations()">
                             <i class="bi bi-search"></i> ค้นหา
                         </button>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <select class="form-select form-select-lg" id="sectorFilter" onchange="filterBySector()">
                         <option value="">ทุกสาขา</option>
                         <option value="Healthcare">Healthcare</option>
@@ -276,8 +429,36 @@
                         <option value="Telecommunications">Telecommunications</option>
                     </select>
                 </div>
+                <div class="col-md-3">
+                    <button class="btn btn-outline-secondary btn-lg w-100" onclick="clearFilters()">
+                        <i class="bi bi-x-circle"></i> ล้างตัวกรอง
+                    </button>
+                </div>
             </div>
             <div id="searchResults" class="mt-3"></div>
+        </div>
+
+        <!-- Export Section -->
+        <div class="export-section">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h5><i class="bi bi-file-earmark-excel"></i> ส่งออกข้อมูล</h5>
+                    <p class="mb-0 text-muted">ดาวน์โหลดข้อมูลในรูปแบบต่างๆ เพื่อนำไปใช้งานต่อ</p>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <div class="btn-group">
+                        <button class="btn btn-outline-success" onclick="exportToCSV()">
+                            <i class="bi bi-file-csv"></i> CSV
+                        </button>
+                        <button class="btn btn-outline-info" onclick="exportToJSON()">
+                            <i class="bi bi-file-code"></i> JSON
+                        </button>
+                        <button class="btn btn-outline-danger" onclick="exportToPDF()">
+                            <i class="bi bi-file-pdf"></i> PDF Report
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Current Innovations -->
@@ -287,6 +468,7 @@
                 <div>
                     <button class="btn btn-sm btn-outline-primary" onclick="sortByValue()">เรียงตามมูลค่า</button>
                     <button class="btn btn-sm btn-outline-secondary" onclick="sortByName()">เรียงตามชื่อ</button>
+                    <button class="btn btn-sm btn-outline-info" onclick="sortByGrowth()">เรียงตามการเติบโต</button>
                     <button class="btn btn-sm btn-outline-success" onclick="toggleChart('innovation')">แสดง/ซ่อน กราฟ</button>
                 </div>
             </div>
@@ -336,415 +518,266 @@
         </section>
     </div>
 
-    <!-- API Status Indicator -->
-    <div class="api-status" id="apiStatus">
-        <span class="status-dot offline"></span>
-        <span id="statusText">Standalone Mode</span>
-    </div>
-
-    <!-- Footer -->
-    <footer class="bg-dark text-light mt-5 py-4">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <h5><i class="bi bi-globe"></i> Global Innovation Tracker</h5>
-                    <p>ระบบติดตามและวิเคราะห์การเคลื่อนไหวของนวัตกรรมโลก</p>
-                    <p>
-                        <a href="https://github.com/netipoch-pro/Global-Innovation" class="text-light">
-                            <i class="bi bi-github"></i> View on GitHub
-                        </a>
-                    </p>
+    <!-- Export Modal -->
+    <div class="modal fade" id="exportModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-download"></i> ส่งออกข้อมูล</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="col-md-6 text-md-end">
-                    <p>ข้อมูลอัปเดตล่าสุด: <span id="footerUpdate"></span></p>
-                    <p>Powered by AI Gemini</p>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Data - Same as your server.js
-        const currentInnovations = [
-            {
-                id: 1,
-                name: "AI-Powered Drug Discovery",
-                description: "Using artificial intelligence to accelerate the discovery of new pharmaceuticals",
-                sector: "Healthcare",
-                economicValue: "$50B",
-                trend: "กำลังเติบโต",
-                growth: 85
-            },
-            {
-                id: 2,
-                name: "Quantum Computing Breakthrough",
-                description: "Major advances in quantum processors for commercial applications",
-                sector: "Technology",
-                economicValue: "$120B",
-                trend: "กำลังเติบโต",
-                growth: 92
-            },
-            {
-                id: 3,
-                name: "Vertical Farming Systems",
-                description: "Innovative urban agriculture solutions for food security",
-                sector: "Agriculture",
-                economicValue: "$35B",
-                trend: "กำลังเติบโต",
-                growth: 65
-            },
-            {
-                id: 4,
-                name: "Fusion Energy Commercialization",
-                description: "First commercial fusion reactors coming online",
-                sector: "Energy",
-                economicValue: "$200B",
-                trend: "กำลังเติบโต",
-                growth: 78
-            },
-            {
-                id: 5,
-                name: "Brain-Computer Interfaces",
-                description: "Direct neural interfaces for medical and consumer applications",
-                sector: "Healthcare",
-                economicValue: "$80B",
-                trend: "กำลังเติบโต",
-                growth: 70
-            },
-            {
-                id: 6,
-                name: "Autonomous Vehicle Networks",
-                description: "Fully autonomous transportation systems in major cities",
-                sector: "Transportation",
-                economicValue: "$150B",
-                trend: "กำลังเติบโต",
-                growth: 88
-            },
-            {
-                id: 7,
-                name: "Carbon Capture Megastructures",
-                description: "Large-scale atmospheric carbon capture facilities",
-                sector: "Environment",
-                economicValue: "$90B",
-                trend: "กำลังเติบโต",
-                growth: 72
-            },
-            {
-                id: 8,
-                name: "Space-Based Solar Power",
-                description: "Orbital solar collectors beaming energy to Earth",
-                sector: "Energy",
-                economicValue: "$180B",
-                trend: "กำลังเติบโต",
-                growth: 60
-            },
-            {
-                id: 9,
-                name: "Personalized Genetic Medicine",
-                description: "Tailored treatments based on individual genetic profiles",
-                sector: "Healthcare",
-                economicValue: "$75B",
-                trend: "กำลังเติบโต",
-                growth: 83
-            },
-            {
-                id: 10,
-                name: "Blockchain for Supply Chains",
-                description: "Transparent and secure global supply chain tracking",
-                sector: "Logistics",
-                economicValue: "$45B",
-                trend: "กำลังเติบโต",
-                growth: 55
-            }
-        ];
-
-        const futurePredictions = [
-            {
-                id: 1,
-                name: "Neural Lace Technology",
-                description: "Implantable brain interfaces for enhanced cognition",
-                sector: "Healthcare",
-                predictedValue: "$500B",
-                timeframe: "4-5 ปีข้างหน้า",
-                probability: 75
-            },
-            {
-                id: 2,
-                name: "Molecular Assemblers",
-                description: "Nanotechnology for on-demand material creation",
-                sector: "Manufacturing",
-                predictedValue: "$1.2T",
-                timeframe: "4-5 ปีข้างหน้า",
-                probability: 60
-            },
-            {
-                id: 3,
-                name: "Atmospheric Water Generation",
-                description: "Devices that extract potable water from air at any climate",
-                sector: "Environment",
-                predictedValue: "$300B",
-                timeframe: "4-5 ปีข้างหน้า",
-                probability: 85
-            },
-            {
-                id: 4,
-                name: "Holographic Communication",
-                description: "Real-time 3D holographic telepresence systems",
-                sector: "Telecommunications",
-                predictedValue: "$250B",
-                timeframe: "4-5 ปีข้างหน้า",
-                probability: 70
-            },
-            {
-                id: 5,
-                name: "Biological Age Reversal",
-                description: "Therapies that significantly reverse aging processes",
-                sector: "Healthcare",
-                predictedValue: "$800B",
-                timeframe: "4-5 ปีข้างหน้า",
-                probability: 50
-            }
-        ];
-
-        // Global variables
-        let innovationChart = null;
-        let predictionChart = null;
-        let apiConnected = false;
-
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            renderInnovations();
-            renderPredictions();
-            initCharts();
-            updateLastUpdateTime();
-            checkAPIConnection();
-            
-            // Auto-refresh every 30 seconds
-            setInterval(() => {
-                refreshData();
-            }, 30000);
-        });
-
-        // Render innovation cards
-        function renderInnovations(innovations = currentInnovations) {
-            const container = document.getElementById('innovationsContainer');
-            container.innerHTML = innovations.map(innovation => `
-                <div class="col-md-6 col-lg-4 mb-3">
-                    <div class="card innovation-card h-100">
-                        <div class="card-body">
-                            <h5 class="card-title">${innovation.name}</h5>
-                            <span class="badge bg-primary sector-badge mb-2">${innovation.sector}</span>
-                            <p class="card-text">${innovation.description}</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <span class="text-muted">มูลค่า:</span>
-                                    <strong class="text-success">${innovation.economicValue}</strong>
-                                </div>
-                                <span class="trend-up">
-                                    <i class="bi bi-arrow-up"></i> ${innovation.trend}
-                                </span>
+                <div class="modal-body">
+                    <form id="exportForm">
+                        <div class="mb-3">
+                            <label class="form-label">เลือกประเภทข้อมูล:</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="exportInnovations" checked>
+                                <label class="form-check-label" for="exportInnovations">นวัตกรรมปัจจุบัน</label>
                             </div>
-                            <div class="progress mt-2" style="height: 5px;">
-                                <div class="progress-bar bg-success" style="width: ${innovation.growth || 70}%"></div>
-                            </div>
-                        </div>
+                        `).join('')}
                     </div>
-                </div>
-            `).join('');
-        }
 
-        // Render prediction cards
-        function renderPredictions(predictions = futurePredictions) {
-            const container = document.getElementById('predictionsContainer');
-            container.innerHTML = predictions.map(prediction => `
-                <div class="col-md-6 col-lg-4 mb-3">
-                    <div class="card prediction-card h-100">
-                        <div class="card-body">
-                            <h5 class="card-title">${prediction.name}</h5>
-                            <span class="badge bg-warning text-dark sector-badge mb-2">${prediction.sector}</span>
-                            <p class="card-text">${prediction.description}</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <span class="text-muted">มูลค่าที่คาดการณ์:</span>
-                                    <strong class="text-warning">${prediction.predictedValue}</strong>
-                                </div>
-                                <span class="text-muted">${prediction.timeframe}</span>
+                    <div class="section">
+                        <h2>การคาดการณ์อนาคต</h2>
+                        ${futurePredictions.map(item => `
+                            <div class="item">
+                                <h3>${item.name}</h3>
+                                <p><strong>สาขา:</strong> ${item.sector}</p>
+                                <p><strong>คำอธิบาย:</strong> ${item.description}</p>
+                                <p><strong>มูลค่าที่คาดการณ์:</strong> ${item.predictedValue}</p>
+                                <p><strong>ความน่าจะเป็น:</strong> ${item.probability}%</p>
                             </div>
-                            <div class="mt-2">
-                                <small class="text-muted">ความน่าจะเป็น: ${prediction.probability || 70}%</small>
-                                <div class="progress" style="height: 5px;">
-                                    <div class="progress-bar bg-warning" style="width: ${prediction.probability || 70}%"></div>
-                                </div>
-                            </div>
-                        </div>
+                        `).join('')}
                     </div>
-                </div>
-            `).join('');
+                </body>
+                </html>
+            `;
         }
 
-        // Initialize charts
-        function initCharts() {
-            // Innovation Growth Chart
-            const ctx1 = document.getElementById('innovationGrowthChart').getContext('2d');
-            innovationChart = new Chart(ctx1, {
-                type: 'bar',
-                data: {
-                    labels: currentInnovations.map(i => i.name.substring(0, 20) + '...'),
-                    datasets: [{
-                        label: 'อัตราการเติบโต (%)',
-                        data: currentInnovations.map(i => i.growth || Math.floor(Math.random() * 100) + 50),
-                        backgroundColor: 'rgba(0, 123, 255, 0.7)',
-                        borderColor: 'rgba(0, 123, 255, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'อัตราการเติบโต (%)'
-                            }
-                        }
-                    }
-                }
-            });
-
-            // Future Predictions Chart
-            const ctx2 = document.getElementById('futurePredictionsChart').getContext('2d');
-            predictionChart = new Chart(ctx2, {
-                type: 'line',
-                data: {
-                    labels: futurePredictions.map(p => p.name),
-                    datasets: [{
-                        label: 'มูลค่าทางเศรษฐกิจที่คาดการณ์',
-                        data: [500, 1200, 300, 250, 800],
-                        fill: true,
-                        backgroundColor: 'rgba(255, 193, 7, 0.2)',
-                        borderColor: 'rgba(255, 193, 7, 1)',
-                        tension: 0.4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'มูลค่า (พันล้านดอลลาร์)'
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        // Search innovations
-        function searchInnovations() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = currentInnovations.filter(i => 
-                i.name.toLowerCase().includes(query) || 
-                i.description.toLowerCase().includes(query) ||
-                i.sector.toLowerCase().includes(query)
-            );
+        function performExport() {
+            const format = document.getElementById('exportFormat').value;
+            const includeInnovations = document.getElementById('exportInnovations').checked;
+            const includePredictions = document.getElementById('exportPredictions').checked;
             
-            if (filtered.length > 0) {
-                renderInnovations(filtered);
-                document.getElementById('searchResults').innerHTML = 
-                    `<div class="alert alert-success">พบ ${filtered.length} รายการ</div>`;
-            } else {
-                document.getElementById('searchResults').innerHTML = 
-                    `<div class="alert alert-warning">ไม่พบข้อมูลที่ค้นหา</div>`;
+            if (!includeInnovations && !includePredictions) {
+                showNotification('กรุณาเลือกข้อมูลที่ต้องการส่งออก', 'warning');
+                return;
             }
-        }
 
-        // Filter by sector
-        function filterBySector() {
-            const sector = document.getElementById('sectorFilter').value;
-            if (sector) {
-                const filtered = currentInnovations.filter(i => i.sector === sector);
-                renderInnovations(filtered);
-            } else {
-                renderInnovations();
+            let data = {};
+            if (includeInnovations) data.innovations = currentInnovations;
+            if (includePredictions) data.predictions = futurePredictions;
+            data.exportDate = new Date().toISOString();
+
+            switch (format) {
+                case 'csv':
+                    exportCustomCSV(data);
+                    break;
+                case 'json':
+                    downloadFile(JSON.stringify(data, null, 2), 'export.json', 'application/json');
+                    break;
+                case 'excel':
+                    exportToExcel(data);
+                    break;
             }
-        }
 
-        // Sort functions
-        function sortByValue() {
-            const sorted = [...currentInnovations].sort((a, b) => {
-                const aVal = parseInt(a.economicValue.replace(/\D/g, ''));
-                const bVal = parseInt(b.economicValue.replace(/\D/g, ''));
-                return bVal - aVal;
-            });
-            renderInnovations(sorted);
-        }
-
-        function sortByName() {
-            const sorted = [...currentInnovations].sort((a, b) => a.name.localeCompare(b.name));
-            renderInnovations(sorted);
-        }
-
-        // Toggle charts
-        function toggleChart(type) {
-            const card = type === 'innovation' ? 
-                document.getElementById('innovationChartCard') : 
-                document.getElementById('predictionChartCard');
-            card.style.display = card.style.display === 'none' ? 'block' : 'none';
-        }
-
-        // Toggle theme
-        function toggleTheme() {
-            document.body.classList.toggle('bg-dark');
-            document.body.classList.toggle('text-light');
+            // Close modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('exportModal'));
+            modal.hide();
             
-            const cards = document.querySelectorAll('.card');
-            cards.forEach(card => {
-                card.classList.toggle('bg-dark');
-                card.classList.toggle('text-light');
-            });
+            showNotification('ส่งออกข้อมูลเรียบร้อย', 'success');
         }
 
-        // Refresh data
+        function exportCustomCSV(data) {
+            let csvContent = '';
+            
+            if (data.innovations) {
+                csvContent += 'นวัตกรรมปัจจุบัน\n';
+                csvContent += 'Name,Description,Sector,Economic Value,Growth,Impact\n';
+                data.innovations.forEach(item => {
+                    csvContent += `"${item.name}","${item.description}",${item.sector},${item.economicValue},${item.growth},${item.impact}\n`;
+                });
+                csvContent += '\n';
+            }
+            
+            if (data.predictions) {
+                csvContent += 'การคาดการณ์อนาคต\n';
+                csvContent += 'Name,Description,Sector,Predicted Value,Probability,Timeframe\n';
+                data.predictions.forEach(item => {
+                    csvContent += `"${item.name}","${item.description}",${item.sector},${item.predictedValue},${item.probability},"${item.timeframe}"\n`;
+                });
+            }
+            
+            downloadFile(csvContent, 'global_innovations_export.csv', 'text/csv');
+        }
+
+        function exportToExcel(data) {
+            // Simple Excel export using HTML table format
+            let excelContent = `
+                <html>
+                <head>
+                    <meta charset="utf-8">
+                    <style>
+                        table { border-collapse: collapse; width: 100%; }
+                        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                        th { background-color: #f2f2f2; font-weight: bold; }
+                        .section-header { background-color: #007bff; color: white; font-weight: bold; }
+                    </style>
+                </head>
+                <body>
+            `;
+
+            if (data.innovations) {
+                excelContent += `
+                    <h2>นวัตกรรมปัจจุบัน</h2>
+                    <table>
+                        <tr>
+                            <th>ชื่อ</th>
+                            <th>คำอธิบาย</th>
+                            <th>สาขา</th>
+                            <th>มูลค่าทางเศรษฐกิจ</th>
+                            <th>การเติบโต (%)</th>
+                            <th>ผลกระทบ</th>
+                        </tr>
+                `;
+                
+                data.innovations.forEach(item => {
+                    excelContent += `
+                        <tr>
+                            <td>${item.name}</td>
+                            <td>${item.description}</td>
+                            <td>${item.sector}</td>
+                            <td>${item.economicValue}</td>
+                            <td>${item.growth}</td>
+                            <td>${item.impact}</td>
+                        </tr>
+                    `;
+                });
+                
+                excelContent += '</table><br>';
+            }
+
+            if (data.predictions) {
+                excelContent += `
+                    <h2>การคาดการณ์อนาคต</h2>
+                    <table>
+                        <tr>
+                            <th>ชื่อ</th>
+                            <th>คำอธิบาย</th>
+                            <th>สาขา</th>
+                            <th>มูลค่าที่คาดการณ์</th>
+                            <th>ความน่าจะเป็น (%)</th>
+                            <th>ระยะเวลา</th>
+                        </tr>
+                `;
+                
+                data.predictions.forEach(item => {
+                    excelContent += `
+                        <tr>
+                            <td>${item.name}</td>
+                            <td>${item.description}</td>
+                            <td>${item.sector}</td>
+                            <td>${item.predictedValue}</td>
+                            <td>${item.probability}</td>
+                            <td>${item.timeframe}</td>
+                        </tr>
+                    `;
+                });
+                
+                excelContent += '</table>';
+            }
+
+            excelContent += '</body></html>';
+            
+            downloadFile(excelContent, 'global_innovations_export.xls', 'application/vnd.ms-excel');
+        }
+
+        function downloadFile(content, filename, contentType) {
+            const blob = new Blob([content], { type: contentType });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+
+        // Enhanced refresh data with progress indication
         function refreshData() {
             const spinner = document.querySelector('.loading-spinner');
             spinner.classList.add('active');
             
-            // Simulate data refresh
-            setTimeout(() => {
-                renderInnovations();
-                renderPredictions();
-                updateLastUpdateTime();
-                spinner.classList.remove('active');
-                
-                // Show notification
-                showNotification('ข้อมูลได้รับการอัพเดทแล้ว', 'success');
-            }, 1000);
+            // Simulate data refresh with progress
+            let progress = 0;
+            const progressInterval = setInterval(() => {
+                progress += 10;
+                if (progress >= 100) {
+                    clearInterval(progressInterval);
+                    
+                    // Simulate some data changes
+                    currentInnovations.forEach(innovation => {
+                        innovation.growth = Math.max(20, Math.min(95, innovation.growth + (Math.random() - 0.5) * 10));
+                    });
+                    
+                    futurePredictions.forEach(prediction => {
+                        prediction.probability = Math.max(30, Math.min(95, prediction.probability + (Math.random() - 0.5) * 5));
+                    });
+                    
+                    // Re-render everything
+                    renderInnovations();
+                    renderPredictions();
+                    renderSectorStats();
+                    updateStats();
+                    updateLastUpdateTime();
+                    
+                    // Update charts
+                    if (innovationChart) {
+                        innovationChart.data.datasets[0].data = currentInnovations.map(i => i.growth);
+                        innovationChart.update();
+                    }
+                    
+                    if (predictionChart) {
+                        predictionChart.data.datasets[0].data = futurePredictions.map(p => p.probability);
+                        predictionChart.update();
+                    }
+                    
+                    spinner.classList.remove('active');
+                    showNotification('ข้อมูลได้รับการอัพเดทแล้ว', 'success');
+                }
+            }, 100);
         }
 
         // Update last update time
         function updateLastUpdateTime() {
             const now = new Date();
-            const timeString = now.toLocaleString('th-TH');
+            const timeString = now.toLocaleString('th-TH', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
             document.getElementById('lastUpdate').textContent = timeString;
             document.getElementById('footerUpdate').textContent = timeString;
         }
 
-        // Check API connection (optional - for future backend integration)
+        // Enhanced API connection check
         async function checkAPIConnection() {
-            // Try to connect to your backend if available
             try {
-                // Uncomment when you have backend deployed
-                // const response = await axios.get('https://your-backend-url/api/health');
-                // if (response.status === 200) {
-                //     apiConnected = true;
-                //     updateAPIStatus(true);
-                // }
+                // Simulate API health check
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // For demo purposes, randomly determine connection status
+                const isConnected = Math.random() > 0.5;
+                apiConnected = isConnected;
+                updateAPIStatus(isConnected);
+                
+                if (isConnected) {
+                    // Simulate fetching real-time data
+                    console.log('Connected to API - fetching real-time data');
+                }
             } catch (error) {
                 console.log('Running in standalone mode');
                 updateAPIStatus(false);
@@ -767,7 +800,1212 @@
             }
         }
 
-        // Show notification
-        </script>
+        // Show connection info
+        function showConnectionInfo() {
+            const status = apiConnected ? 'เชื่อมต่อกับ API' : 'โหมดออฟไลน์';
+            const details = apiConnected ? 
+                'ระบบกำลังใช้ข้อมูลแบบเรียลไทม์จาก API' : 
+                'ระบบกำลังใช้ข้อมูลตัวอย่างในโหมดออฟไลน์';
+            
+            showNotification(`${status}: ${details}`, 'info');
+        }
+
+        // Enhanced notification system
+        function showNotification(message, type = 'info') {
+            const colors = {
+                success: '#28a745',
+                error: '#dc3545',
+                warning: '#ffc107',
+                info: '#17a2b8'
+            };
+            
+            const icons = {
+                success: 'bi-check-circle',
+                error: 'bi-x-circle',
+                warning: 'bi-exclamation-triangle',
+                info: 'bi-info-circle'
+            };
+            
+            const notification = document.createElement('div');
+            notification.className = `notification`;
+            notification.style.backgroundColor = colors[type];
+            notification.style.color = type === 'warning' ? '#000' : '#fff';
+            notification.innerHTML = `
+                <i class="bi ${icons[type]} me-2"></i>
+                ${message}
+                <button type="button" class="btn-close btn-close-white ms-2" onclick="this.parentElement.remove()"></button>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.style.opacity = '0';
+                    setTimeout(() => {
+                        notification.remove();
+                    }, 300);
+                }
+            }, 5000);
+        }
+
+        // Advanced search with filtering capabilities
+        function advancedSearch() {
+            const modal = new bootstrap.Modal(document.createElement('div'));
+            const modalHtml = `
+                <div class="modal fade" tabindex="-1">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title"><i class="bi bi-search"></i> การค้นหาขั้นสูง</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="advancedSearchForm">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label">ช่วงมูลค่าทางเศรษฐกิจ</label>
+                                                <div class="row">
+                                                    <div class="col-6">
+                                                        <input type="number" class="form-control" placeholder="ต่ำสุด" id="minValue">
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <input type="number" class="form-control" placeholder="สูงสุด" id="maxValue">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">ช่วงการเติบโต (%)</label>
+                                                <div class="row">
+                                                    <div class="col-6">
+                                                        <input type="number" class="form-control" placeholder="ต่ำสุด" id="minGrowth">
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <input type="number" class="form-control" placeholder="สูงสุด" id="maxGrowth">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label">ระดับผลกระทบ</label>
+                                                <select class="form-select" id="impactLevel">
+                                                    <option value="">ทั้งหมด</option>
+                                                    <option value="Very High">Very High</option>
+                                                    <option value="High">High</option>
+                                                    <option value="Medium">Medium</option>
+                                                    <option value="Low">Low</option>
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">บริษัท</label>
+                                                <input type="text" class="form-control" placeholder="ชื่อบริษัท" id="companySearch">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
+                                <button type="button" class="btn btn-primary" onclick="performAdvancedSearch()">ค้นหา</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+            const modalElement = document.body.lastElementChild;
+            const modalInstance = new bootstrap.Modal(modalElement);
+            modalInstance.show();
+            
+            modalElement.addEventListener('hidden.bs.modal', () => {
+                modalElement.remove();
+            });
+        }
+
+        function performAdvancedSearch() {
+            const minValue = parseFloat(document.getElementById('minValue').value) || 0;
+            const maxValue = parseFloat(document.getElementById('maxValue').value) || Infinity;
+            const minGrowth = parseFloat(document.getElementById('minGrowth').value) || 0;
+            const maxGrowth = parseFloat(document.getElementById('maxGrowth').value) || 100;
+            const impactLevel = document.getElementById('impactLevel').value;
+            const companySearch = document.getElementById('companySearch').value.toLowerCase();
+            
+            const filtered = currentInnovations.filter(innovation => {
+                const value = parseFloat(innovation.economicValue.replace(/[^0-9.]/g, ''));
+                const growth = innovation.growth || 0;
+                
+                const valueMatch = value >= minValue && value <= maxValue;
+                const growthMatch = growth >= minGrowth && growth <= maxGrowth;
+                const impactMatch = !impactLevel || innovation.impact === impactLevel;
+                const companyMatch = !companySearch || 
+                    (innovation.companies && innovation.companies.some(c => 
+                        c.toLowerCase().includes(companySearch)
+                    ));
+                
+                return valueMatch && growthMatch && impactMatch && companyMatch;
+            });
+            
+            currentInnovationsFiltered = filtered;
+            renderInnovations(filtered);
+            
+            // Close modal
+            const modal = bootstrap.Modal.getInstance(document.querySelector('.modal.show'));
+            modal.hide();
+            
+            showNotification(`พบผลลัพธ์ ${filtered.length} รายการ`, 'success');
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(event) {
+            // Ctrl/Cmd + / for search focus
+            if ((event.ctrlKey || event.metaKey) && event.key === '/') {
+                event.preventDefault();
+                document.getElementById('searchInput').focus();
+            }
+            
+            // Ctrl/Cmd + R for refresh
+            if ((event.ctrlKey || event.metaKey) && event.key === 'r') {
+                event.preventDefault();
+                refreshData();
+            }
+            
+            // Ctrl/Cmd + D for theme toggle
+            if ((event.ctrlKey || event.metaKey) && event.key === 'd') {
+                event.preventDefault();
+                toggleTheme();
+            }
+            
+            // Escape to clear search
+            if (event.key === 'Escape') {
+                clearFilters();
+            }
+        });
+
+        // Performance monitoring
+        function monitorPerformance() {
+            if ('performance' in window) {
+                const loadTime = performance.timing.loadEventEnd - performance.timing.navigationStart;
+                console.log(`Page load time: ${loadTime}ms`);
+                
+                // Monitor memory usage if available
+                if ('memory' in performance) {
+                    console.log('Memory usage:', performance.memory);
+                }
+            }
+        }
+
+        // Initialize performance monitoring
+        window.addEventListener('load', monitorPerformance);
+
+        // Service Worker registration for offline support (optional)
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                // Uncomment when you have a service worker file
+                // navigator.serviceWorker.register('/sw.js')
+                //     .then(registration => console.log('SW registered'))
+                //     .catch(error => console.log('SW registration failed'));
+            });
+        }
+
+        // Add click outside to close dropdowns and modals behavior
+        document.addEventListener('click', function(event) {
+            // Close any open dropdowns when clicking outside
+            const dropdowns = document.querySelectorAll('.dropdown-menu.show');
+            dropdowns.forEach(dropdown => {
+                if (!dropdown.contains(event.target)) {
+                    dropdown.classList.remove('show');
+                }
+            });
+        });
+
+        // Add smooth scrolling for internal links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add loading states for buttons
+        function addLoadingState(button, promise) {
+            const originalText = button.innerHTML;
+            button.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>กำลังโหลด...';
+            button.disabled = true;
+            
+            promise.finally(() => {
+                button.innerHTML = originalText;
+                button.disabled = false;
+            });
+        }
+
+        // Add accessibility improvements
+        function improveAccessibility() {
+            // Add skip links
+            const skipLink = document.createElement('a');
+            skipLink.href = '#main-content';
+            skipLink.className = 'visually-hidden-focusable btn btn-primary';
+            skipLink.textContent = 'ข้ามไปยังเนื้อหาหลัก';
+            skipLink.style.position = 'absolute';
+            skipLink.style.top = '10px';
+            skipLink.style.left = '10px';
+            skipLink.style.zIndex = '9999';
+            document.body.insertBefore(skipLink, document.body.firstChild);
+            
+            // Add aria-labels to interactive elements
+            document.querySelectorAll('button:not([aria-label])').forEach(button => {
+                const text = button.textContent.trim();
+                if (text) {
+                    button.setAttribute('aria-label', text);
+                }
+            });
+            
+            // Add focus management for modals
+            document.addEventListener('shown.bs.modal', function(event) {
+                const modal = event.target;
+                const focusableElements = modal.querySelectorAll(
+                    'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+                );
+                if (focusableElements.length > 0) {
+                    focusableElements[0].focus();
+                }
+            });
+        }
+
+        // Initialize accessibility improvements
+        document.addEventListener('DOMContentLoaded', improveAccessibility);
+
+        // Add print styles and functionality
+        function setupPrintStyles() {
+            const printStyles = `
+                @media print {
+                    .no-print, .btn, .modal, .loading-spinner, .api-status { display: none !important; }
+                    .card { break-inside: avoid; margin-bottom: 1rem; }
+                    .chart-container { height: 300px; }
+                    body { font-size: 12pt; }
+                    h1, h2, h3 { page-break-after: avoid; }
+                    .container { max-width: 100%; }
+                }
+            `;
+            
+            const styleSheet = document.createElement('style');
+            styleSheet.textContent = printStyles;
+            document.head.appendChild(styleSheet);
+        }
+
+        // Initialize print styles
+        setupPrintStyles();
+
+        // Add error boundary for JavaScript errors
+        window.addEventListener('error', function(event) {
+            console.error('JavaScript error:', event.error);
+            showNotification('เกิดข้อผิดพลาดในระบบ กรุณาลองใหม่อีกครั้ง', 'error');
+        });
+
+        // Add unhandled promise rejection handler
+        window.addEventListener('unhandledrejection', function(event) {
+            console.error('Unhandled promise rejection:', event.reason);
+            showNotification('เกิดข้อผิดพลาดในการประมวลผลข้อมูล', 'error');
+        });
+
+        // Final initialization message
+        console.log('🚀 Global Innovation Dashboard initialized successfully!');
+        console.log('📊 Features: Search, Filter, Sort, Export, Dark Theme, Charts');
+        console.log('⌨️ Keyboard shortcuts: Ctrl+/ (search), Ctrl+R (refresh), Ctrl+D (theme), Esc (clear)');
+    </script>
 </body>
-</html>
+</html>>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="exportPredictions" checked>
+                                <label class="form-check-label" for="exportPredictions">การคาดการณ์อนาคต</label>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="exportFormat" class="form-label">รูปแบบไฟล์:</label>
+                            <select class="form-select" id="exportFormat">
+                                <option value="csv">CSV</option>
+                                <option value="json">JSON</option>
+                                <option value="excel">Excel</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ยกเลิก</button>
+                    <button type="button" class="btn btn-primary" onclick="performExport()">ส่งออก</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- API Status Indicator -->
+    <div class="api-status" id="apiStatus" onclick="showConnectionInfo()">
+        <span class="status-dot offline"></span>
+        <span id="statusText">Standalone Mode</span>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light mt-5 py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="bi bi-globe"></i> Global Innovation Tracker</h5>
+                    <p>ระบบติดตามและวิเคราะห์การเคลื่อนไหวของนวัตกรรมโลก</p>
+                    <p>
+                        <a href="https://github.com/netipoch-pro/Global-Innovation" class="text-light">
+                            <i class="bi bi-github"></i> View on GitHub
+                        </a>
+                    </p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p>ข้อมูลอัปเดตล่าสุด: <span id="footerUpdate"></span></p>
+                    <p>Powered by AI Gemini & Claude</p>
+                    <div class="mt-2">
+                        <small class="text-muted">
+                            © 2025 Global Innovation Dashboard. 
+                            Made with ❤️ for tracking global innovation trends.
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Data - Enhanced with more realistic data
+        const currentInnovations = [
+            {
+                id: 1,
+                name: "AI-Powered Drug Discovery",
+                description: "Using artificial intelligence to accelerate the discovery of new pharmaceuticals",
+                sector: "Healthcare",
+                economicValue: "$50B",
+                trend: "กำลังเติบโต",
+                growth: 85,
+                companies: ["DeepMind", "Atomwise", "Recursion"],
+                impact: "High"
+            },
+            {
+                id: 2,
+                name: "Quantum Computing Breakthrough",
+                description: "Major advances in quantum processors for commercial applications",
+                sector: "Technology",
+                economicValue: "$120B",
+                trend: "กำลังเติบโต",
+                growth: 92,
+                companies: ["IBM", "Google", "Microsoft"],
+                impact: "Very High"
+            },
+            {
+                id: 3,
+                name: "Vertical Farming Systems",
+                description: "Innovative urban agriculture solutions for food security",
+                sector: "Agriculture",
+                economicValue: "$35B",
+                trend: "กำลังเติบโต",
+                growth: 65,
+                companies: ["AeroFarms", "Plenty", "Bowery"],
+                impact: "Medium"
+            },
+            {
+                id: 4,
+                name: "Fusion Energy Commercialization",
+                description: "First commercial fusion reactors coming online",
+                sector: "Energy",
+                economicValue: "$200B",
+                trend: "กำลังเติบโต",
+                growth: 78,
+                companies: ["Commonwealth Fusion", "TAE Technologies"],
+                impact: "Very High"
+            },
+            {
+                id: 5,
+                name: "Brain-Computer Interfaces",
+                description: "Direct neural interfaces for medical and consumer applications",
+                sector: "Healthcare",
+                economicValue: "$80B",
+                trend: "กำลังเติบโต",
+                growth: 70,
+                companies: ["Neuralink", "Synchron", "Kernel"],
+                impact: "High"
+            },
+            {
+                id: 6,
+                name: "Autonomous Vehicle Networks",
+                description: "Fully autonomous transportation systems in major cities",
+                sector: "Transportation",
+                economicValue: "$150B",
+                trend: "กำลังเติบโต",
+                growth: 88,
+                companies: ["Waymo", "Tesla", "Cruise"],
+                impact: "Very High"
+            },
+            {
+                id: 7,
+                name: "Carbon Capture Megastructures",
+                description: "Large-scale atmospheric carbon capture facilities",
+                sector: "Environment",
+                economicValue: "$90B",
+                trend: "กำลังเติบโต",
+                growth: 72,
+                companies: ["Climeworks", "Carbon Engineering"],
+                impact: "High"
+            },
+            {
+                id: 8,
+                name: "Space-Based Solar Power",
+                description: "Orbital solar collectors beaming energy to Earth",
+                sector: "Energy",
+                economicValue: "$180B",
+                trend: "กำลังเติบโต",
+                growth: 60,
+                companies: ["Space Solar", "Caltech"],
+                impact: "High"
+            },
+            {
+                id: 9,
+                name: "Personalized Genetic Medicine",
+                description: "Tailored treatments based on individual genetic profiles",
+                sector: "Healthcare",
+                economicValue: "$75B",
+                trend: "กำลังเติบโต",
+                growth: 83,
+                companies: ["Illumina", "23andMe", "Foundation Medicine"],
+                impact: "High"
+            },
+            {
+                id: 10,
+                name: "Blockchain for Supply Chains",
+                description: "Transparent and secure global supply chain tracking",
+                sector: "Logistics",
+                economicValue: "$45B",
+                trend: "กำลังเติบโต",
+                growth: 55,
+                companies: ["Walmart", "Maersk", "De Beers"],
+                impact: "Medium"
+            }
+        ];
+
+        const futurePredictions = [
+            {
+                id: 1,
+                name: "Neural Lace Technology",
+                description: "Implantable brain interfaces for enhanced cognition",
+                sector: "Healthcare",
+                predictedValue: "$500B",
+                timeframe: "4-5 ปีข้างหน้า",
+                probability: 75,
+                risks: ["Privacy concerns", "Technical challenges"],
+                opportunities: ["Medical breakthroughs", "Enhanced human capability"]
+            },
+            {
+                id: 2,
+                name: "Molecular Assemblers",
+                description: "Nanotechnology for on-demand material creation",
+                sector: "Manufacturing",
+                predictedValue: "$1.2T",
+                timeframe: "4-5 ปีข้างหน้า",
+                probability: 60,
+                risks: ["Environmental impact", "Job displacement"],
+                opportunities: ["Sustainable manufacturing", "New materials"]
+            },
+            {
+                id: 3,
+                name: "Atmospheric Water Generation",
+                description: "Devices that extract potable water from air at any climate",
+                sector: "Environment",
+                predictedValue: "$300B",
+                timeframe: "4-5 ปีข้างหน้า",
+                probability: 85,
+                risks: ["Energy consumption", "Scale limitations"],
+                opportunities: ["Water security", "Disaster relief"]
+            },
+            {
+                id: 4,
+                name: "Holographic Communication",
+                description: "Real-time 3D holographic telepresence systems",
+                sector: "Telecommunications",
+                predictedValue: "$250B",
+                timeframe: "4-5 ปีข้างหน้า",
+                probability: 70,
+                risks: ["Infrastructure costs", "Bandwidth requirements"],
+                opportunities: ["Remote collaboration", "Entertainment industry"]
+            },
+            {
+                id: 5,
+                name: "Biological Age Reversal",
+                description: "Therapies that significantly reverse aging processes",
+                sector: "Healthcare",
+                predictedValue: "$800B",
+                timeframe: "4-5 ปีข้างหน้า",
+                probability: 50,
+                risks: ["Ethical concerns", "Access inequality"],
+                opportunities: ["Extended healthspan", "Economic productivity"]
+            }
+        ];
+
+        // Global variables
+        let innovationChart = null;
+        let predictionChart = null;
+        let sectorChart = null;
+        let apiConnected = false;
+        let currentTheme = 'light';
+        let currentInnovationsFiltered = [...currentInnovations];
+        let currentPredictionsFiltered = [...futurePredictions];
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            renderInnovations();
+            renderPredictions();
+            renderSectorStats();
+            initCharts();
+            updateStats();
+            updateLastUpdateTime();
+            checkAPIConnection();
+            
+            // Auto-refresh every 30 seconds
+            setInterval(() => {
+                refreshData();
+            }, 30000);
+
+            // Load saved theme
+            const savedTheme = localStorage.getItem('dashboard-theme');
+            if (savedTheme === 'dark') {
+                toggleTheme();
+            }
+        });
+
+        // Update statistics
+        function updateStats() {
+            const sectors = [...new Set(currentInnovations.map(i => i.sector))];
+            const totalEconomicValue = currentInnovations.reduce((sum, item) => {
+                const value = parseFloat(item.economicValue.replace(/[^0-9.]/g, ''));
+                return sum + value;
+            }, 0);
+            
+            document.getElementById('totalInnovations').textContent = currentInnovations.length;
+            document.getElementById('totalPredictions').textContent = futurePredictions.length;
+            document.getElementById('totalValue').textContent = `${totalEconomicValue.toFixed(1)}T`;
+            document.getElementById('totalSectors').textContent = sectors.length;
+        }
+
+        // Render sector statistics
+        function renderSectorStats() {
+            const sectorCounts = {};
+            const sectorValues = {};
+            
+            currentInnovations.forEach(innovation => {
+                const sector = innovation.sector;
+                sectorCounts[sector] = (sectorCounts[sector] || 0) + 1;
+                
+                const value = parseFloat(innovation.economicValue.replace(/[^0-9.]/g, ''));
+                sectorValues[sector] = (sectorValues[sector] || 0) + value;
+            });
+
+            const container = document.getElementById('sectorStats');
+            container.innerHTML = Object.keys(sectorCounts).map(sector => `
+                <div class="sector-stat-item fade-in">
+                    <h6 class="fw-bold">${sector}</h6>
+                    <div class="text-primary fw-bold">${sectorCounts[sector]} นวัตกรรม</div>
+                    <div class="text-muted">${sectorValues[sector].toFixed(1)}B</div>
+                </div>
+            `).join('');
+        }
+
+        // Render innovation cards with enhanced features
+        function renderInnovations(innovations = currentInnovationsFiltered) {
+            const container = document.getElementById('innovationsContainer');
+            container.innerHTML = innovations.map(innovation => `
+                <div class="col-md-6 col-lg-4 mb-3 fade-in">
+                    <div class="card innovation-card h-100" onclick="showInnovationDetails(${innovation.id})">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <h5 class="card-title">${innovation.name}</h5>
+                                <span class="badge bg-${getImpactColor(innovation.impact)} ms-2">${innovation.impact}</span>
+                            </div>
+                            <span class="badge bg-primary sector-badge mb-2">${innovation.sector}</span>
+                            <p class="card-text">${innovation.description}</p>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div>
+                                    <span class="text-muted">มูลค่า:</span>
+                                    <strong class="text-success">${innovation.economicValue}</strong>
+                                </div>
+                                <span class="trend-up">
+                                    <i class="bi bi-arrow-up"></i> ${innovation.trend}
+                                </span>
+                            </div>
+                            <div class="progress mb-2" style="height: 5px;">
+                                <div class="progress-bar bg-success" style="width: ${innovation.growth || 70}%"></div>
+                            </div>
+                            <small class="text-muted">การเติบโต: ${innovation.growth || 70}%</small>
+                            ${innovation.companies ? `
+                                <div class="mt-2">
+                                    <small class="text-muted">บริษัทชั้นนำ: ${innovation.companies.slice(0, 2).join(', ')}</small>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Render prediction cards with enhanced features
+        function renderPredictions(predictions = currentPredictionsFiltered) {
+            const container = document.getElementById('predictionsContainer');
+            container.innerHTML = predictions.map(prediction => `
+                <div class="col-md-6 col-lg-4 mb-3 fade-in">
+                    <div class="card prediction-card h-100" onclick="showPredictionDetails(${prediction.id})">
+                        <div class="card-body">
+                            <h5 class="card-title">${prediction.name}</h5>
+                            <span class="badge bg-warning text-dark sector-badge mb-2">${prediction.sector}</span>
+                            <p class="card-text">${prediction.description}</p>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div>
+                                    <span class="text-muted">มูลค่าที่คาดการณ์:</span>
+                                    <strong class="text-warning">${prediction.predictedValue}</strong>
+                                </div>
+                                <span class="text-muted">${prediction.timeframe}</span>
+                            </div>
+                            <div class="mt-2">
+                                <div class="d-flex justify-content-between">
+                                    <small class="text-muted">ความน่าจะเป็น:</small>
+                                    <small class="fw-bold">${prediction.probability || 70}%</small>
+                                </div>
+                                <div class="progress" style="height: 5px;">
+                                    <div class="progress-bar bg-warning" style="width: ${prediction.probability || 70}%"></div>
+                                </div>
+                            </div>
+                            <div class="mt-2">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <small class="text-success">โอกาส: ${prediction.opportunities?.length || 2}</small>
+                                    </div>
+                                    <div class="col-6">
+                                        <small class="text-danger">ความเสี่ยง: ${prediction.risks?.length || 2}</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Get impact color
+        function getImpactColor(impact) {
+            switch(impact) {
+                case 'Very High': return 'danger';
+                case 'High': return 'warning';
+                case 'Medium': return 'info';
+                case 'Low': return 'secondary';
+                default: return 'primary';
+            }
+        }
+
+        // Initialize charts with enhanced features
+        function initCharts() {
+            // Innovation Growth Chart
+            const ctx1 = document.getElementById('innovationGrowthChart').getContext('2d');
+            innovationChart = new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: currentInnovations.map(i => i.name.substring(0, 20) + '...'),
+                    datasets: [{
+                        label: 'อัตราการเติบโต (%)',
+                        data: currentInnovations.map(i => i.growth || Math.floor(Math.random() * 100) + 50),
+                        backgroundColor: currentInnovations.map(i => getImpactColor(i.impact) === 'danger' ? 'rgba(220, 53, 69, 0.7)' : 'rgba(0, 123, 255, 0.7)'),
+                        borderColor: currentInnovations.map(i => getImpactColor(i.impact) === 'danger' ? 'rgba(220, 53, 69, 1)' : 'rgba(0, 123, 255, 1)'),
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true
+                        },
+                        tooltip: {
+                            callbacks: {
+                                afterLabel: function(context) {
+                                    const innovation = currentInnovations[context.dataIndex];
+                                    return `มูลค่า: ${innovation.economicValue}\nสาขา: ${innovation.sector}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'อัตราการเติบโต (%)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                maxRotation: 45
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Future Predictions Chart
+            const ctx2 = document.getElementById('futurePredictionsChart').getContext('2d');
+            predictionChart = new Chart(ctx2, {
+                type: 'radar',
+                data: {
+                    labels: futurePredictions.map(p => p.name),
+                    datasets: [{
+                        label: 'ความน่าจะเป็น (%)',
+                        data: futurePredictions.map(p => p.probability),
+                        fill: true,
+                        backgroundColor: 'rgba(255, 193, 7, 0.2)',
+                        borderColor: 'rgba(255, 193, 7, 1)',
+                        pointBackgroundColor: 'rgba(255, 193, 7, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(255, 193, 7, 1)'
+                    }, {
+                        label: 'มูลค่าทางเศรษฐกิจ (ร้อยพันล้านดอลลาร์)',
+                        data: [5, 12, 3, 2.5, 8], // Normalized values
+                        fill: true,
+                        backgroundColor: 'rgba(0, 123, 255, 0.2)',
+                        borderColor: 'rgba(0, 123, 255, 1)',
+                        pointBackgroundColor: 'rgba(0, 123, 255, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(0, 123, 255, 1)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    elements: {
+                        line: {
+                            borderWidth: 3
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top'
+                        }
+                    },
+                    scales: {
+                        r: {
+                            angleLines: {
+                                display: false
+                            },
+                            suggestedMin: 0,
+                            suggestedMax: 100
+                        }
+                    }
+                }
+            });
+        }
+
+        // Enhanced search with real-time results
+        function handleSearchInput(event) {
+            if (event.key === 'Enter') {
+                searchInnovations();
+            } else {
+                // Real-time search
+                clearTimeout(window.searchTimeout);
+                window.searchTimeout = setTimeout(searchInnovations, 300);
+            }
+        }
+
+        // Search innovations with better filtering
+        function searchInnovations() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const sector = document.getElementById('sectorFilter').value;
+            
+            let filtered = currentInnovations.filter(i => {
+                const matchesQuery = !query || 
+                    i.name.toLowerCase().includes(query) || 
+                    i.description.toLowerCase().includes(query) ||
+                    i.sector.toLowerCase().includes(query) ||
+                    (i.companies && i.companies.some(c => c.toLowerCase().includes(query)));
+                
+                const matchesSector = !sector || i.sector === sector;
+                
+                return matchesQuery && matchesSector;
+            });
+            
+            currentInnovationsFiltered = filtered;
+            renderInnovations(filtered);
+            
+            const resultDiv = document.getElementById('searchResults');
+            if (query || sector) {
+                if (filtered.length > 0) {
+                    resultDiv.innerHTML = 
+                        `<div class="alert alert-success"><i class="bi bi-check-circle"></i> พบ ${filtered.length} รายการ</div>`;
+                } else {
+                    resultDiv.innerHTML = 
+                        `<div class="alert alert-warning"><i class="bi bi-exclamation-triangle"></i> ไม่พบข้อมูลที่ค้นหา</div>`;
+                }
+            } else {
+                resultDiv.innerHTML = '';
+            }
+        }
+
+        // Filter by sector
+        function filterBySector() {
+            searchInnovations(); // Use the enhanced search function
+        }
+
+        // Clear all filters
+        function clearFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('sectorFilter').value = '';
+            document.getElementById('searchResults').innerHTML = '';
+            currentInnovationsFiltered = [...currentInnovations];
+            renderInnovations();
+            showNotification('ล้างตัวกรองเรียบร้อย', 'info');
+        }
+
+        // Enhanced sort functions
+        function sortByValue() {
+            const sorted = [...currentInnovationsFiltered].sort((a, b) => {
+                const aVal = parseFloat(a.economicValue.replace(/[^0-9.]/g, ''));
+                const bVal = parseFloat(b.economicValue.replace(/[^0-9.]/g, ''));
+                return bVal - aVal;
+            });
+            currentInnovationsFiltered = sorted;
+            renderInnovations(sorted);
+            showNotification('เรียงตามมูลค่าเรียบร้อย', 'success');
+        }
+
+        function sortByName() {
+            const sorted = [...currentInnovationsFiltered].sort((a, b) => a.name.localeCompare(b.name));
+            currentInnovationsFiltered = sorted;
+            renderInnovations(sorted);
+            showNotification('เรียงตามชื่อเรียบร้อย', 'success');
+        }
+
+        function sortByGrowth() {
+            const sorted = [...currentInnovationsFiltered].sort((a, b) => (b.growth || 0) - (a.growth || 0));
+            currentInnovationsFiltered = sorted;
+            renderInnovations(sorted);
+            showNotification('เรียงตามการเติบโตเรียบร้อย', 'success');
+        }
+
+        // Toggle charts with animation
+        function toggleChart(type) {
+            const card = type === 'innovation' ? 
+                document.getElementById('innovationChartCard') : 
+                document.getElementById('predictionChartCard');
+            
+            if (card.style.display === 'none') {
+                card.style.display = 'block';
+                card.style.opacity = '0';
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                }, 10);
+            } else {
+                card.style.opacity = '0';
+                setTimeout(() => {
+                    card.style.display = 'none';
+                }, 300);
+            }
+        }
+
+        // Enhanced theme toggle
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('themeIcon');
+            const themeText = document.getElementById('themeText');
+            
+            if (currentTheme === 'light') {
+                body.classList.add('dark-theme');
+                themeIcon.className = 'bi bi-sun';
+                themeText.textContent = 'ธีมสว่าง';
+                currentTheme = 'dark';
+                localStorage.setItem('dashboard-theme', 'dark');
+            } else {
+                body.classList.remove('dark-theme');
+                themeIcon.className = 'bi bi-moon';
+                themeText.textContent = 'ธีมมืด';
+                currentTheme = 'light';
+                localStorage.setItem('dashboard-theme', 'light');
+            }
+            
+            // Update charts colors for dark theme
+            updateChartsTheme();
+            showNotification(`เปลี่ยนเป็น${currentTheme === 'dark' ? 'ธีมมืด' : 'ธีมสว่าง'}เรียบร้อย`, 'info');
+        }
+
+        // Update charts theme
+        function updateChartsTheme() {
+            const textColor = currentTheme === 'dark' ? '#ffffff' : '#666666';
+            const gridColor = currentTheme === 'dark' ? '#444444' : '#e0e0e0';
+            
+            if (innovationChart) {
+                innovationChart.options.scales.x.ticks.color = textColor;
+                innovationChart.options.scales.y.ticks.color = textColor;
+                innovationChart.options.scales.x.grid.color = gridColor;
+                innovationChart.options.scales.y.grid.color = gridColor;
+                innovationChart.options.plugins.legend.labels.color = textColor;
+                innovationChart.update();
+            }
+            
+            if (predictionChart) {
+                predictionChart.options.plugins.legend.labels.color = textColor;
+                predictionChart.update();
+            }
+        }
+
+        // Animate stat cards
+        function animateStatCard(element) {
+            element.style.transform = 'scale(1.1)';
+            setTimeout(() => {
+                element.style.transform = 'scale(1)';
+            }, 200);
+        }
+
+        // Show innovation details
+        function showInnovationDetails(id) {
+            const innovation = currentInnovations.find(i => i.id === id);
+            if (!innovation) return;
+            
+            const modal = new bootstrap.Modal(document.createElement('div'));
+            const modalHtml = `
+                <div class="modal fade" tabindex="-1">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title"><i class="bi bi-lightning"></i> ${innovation.name}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h6>รายละเอียด</h6>
+                                        <p>${innovation.description}</p>
+                                        <p><strong>สาขา:</strong> ${innovation.sector}</p>
+                                        <p><strong>มูลค่าทางเศรษฐกิจ:</strong> ${innovation.economicValue}</p>
+                                        <p><strong>การเติบโต:</strong> ${innovation.growth}%</p>
+                                        <p><strong>ผลกระทบ:</strong> <span class="badge bg-${getImpactColor(innovation.impact)}">${innovation.impact}</span></p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6>บริษัทชั้นนำ</h6>
+                                        <ul class="list-group list-group-flush">
+                                            ${innovation.companies ? innovation.companies.map(company => 
+                                                `<li class="list-group-item">${company}</li>`
+                                            ).join('') : '<li class="list-group-item">ไม่มีข้อมูล</li>'}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                                <button type="button" class="btn btn-primary" onclick="shareInnovation(${id})">แชร์</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+            const modalElement = document.body.lastElementChild;
+            const modalInstance = new bootstrap.Modal(modalElement);
+            modalInstance.show();
+            
+            modalElement.addEventListener('hidden.bs.modal', () => {
+                modalElement.remove();
+            });
+        }
+
+        // Show prediction details
+        function showPredictionDetails(id) {
+            const prediction = futurePredictions.find(p => p.id === id);
+            if (!prediction) return;
+            
+            const modalHtml = `
+                <div class="modal fade" tabindex="-1">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title"><i class="bi bi-graph-up"></i> ${prediction.name}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h6>รายละเอียดการคาดการณ์</h6>
+                                        <p>${prediction.description}</p>
+                                        <p><strong>สาขา:</strong> ${prediction.sector}</p>
+                                        <p><strong>มูลค่าที่คาดการณ์:</strong> ${prediction.predictedValue}</p>
+                                        <p><strong>ระยะเวลา:</strong> ${prediction.timeframe}</p>
+                                        <p><strong>ความน่าจะเป็น:</strong> ${prediction.probability}%</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6 class="text-success">โอกาส</h6>
+                                        <ul class="list-group list-group-flush mb-3">
+                                            ${prediction.opportunities ? prediction.opportunities.map(opp => 
+                                                `<li class="list-group-item text-success"><i class="bi bi-plus-circle"></i> ${opp}</li>`
+                                            ).join('') : '<li class="list-group-item">ไม่มีข้อมูล</li>'}
+                                        </ul>
+                                        <h6 class="text-danger">ความเสี่ยง</h6>
+                                        <ul class="list-group list-group-flush">
+                                            ${prediction.risks ? prediction.risks.map(risk => 
+                                                `<li class="list-group-item text-danger"><i class="bi bi-exclamation-circle"></i> ${risk}</li>`
+                                            ).join('') : '<li class="list-group-item">ไม่มีข้อมูล</li>'}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">ปิด</button>
+                                <button type="button" class="btn btn-warning" onclick="sharePrediction(${id})">แชร์</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+            const modalElement = document.body.lastElementChild;
+            const modalInstance = new bootstrap.Modal(modalElement);
+            modalInstance.show();
+            
+            modalElement.addEventListener('hidden.bs.modal', () => {
+                modalElement.remove();
+            });
+        }
+
+        // Share functions
+        function shareInnovation(id) {
+            const innovation = currentInnovations.find(i => i.id === id);
+            const text = `ตรวจสอบนวัตกรรม: ${innovation.name} - มูลค่า ${innovation.economicValue} ใน ${innovation.sector}`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: innovation.name,
+                    text: text,
+                    url: window.location.href
+                });
+            } else {
+                navigator.clipboard.writeText(text + ' - ' + window.location.href);
+                showNotification('คัดลอกลิงก์เรียบร้อย', 'success');
+            }
+        }
+
+        function sharePrediction(id) {
+            const prediction = futurePredictions.find(p => p.id === id);
+            const text = `การคาดการณ์: ${prediction.name} - มูลค่า ${prediction.predictedValue} ใน ${prediction.timeframe}`;
+            
+            if (navigator.share) {
+                navigator.share({
+                    title: prediction.name,
+                    text: text,
+                    url: window.location.href
+                });
+            } else {
+                navigator.clipboard.writeText(text + ' - ' + window.location.href);
+                showNotification('คัดลอกลิงก์เรียบร้อย', 'success');
+            }
+        }
+
+        // Export functions
+        function exportToCSV() {
+            const csvContent = generateCSV();
+            downloadFile(csvContent, 'global_innovations.csv', 'text/csv');
+        }
+
+        function exportToJSON() {
+            const jsonContent = JSON.stringify({
+                innovations: currentInnovations,
+                predictions: futurePredictions,
+                exportDate: new Date().toISOString()
+            }, null, 2);
+            downloadFile(jsonContent, 'global_innovations.json', 'application/json');
+        }
+
+        function exportToPDF() {
+            // Simple PDF generation using window.print() with styled content
+            const printWindow = window.open('', '_blank');
+            const printContent = generatePrintContent();
+            
+            printWindow.document.write(printContent);
+            printWindow.document.close();
+            printWindow.focus();
+            
+            setTimeout(() => {
+                printWindow.print();
+                printWindow.close();
+            }, 250);
+        }
+
+        function generateCSV() {
+            const headers = ['Name', 'Description', 'Sector', 'Economic Value', 'Growth', 'Impact'];
+            const rows = currentInnovations.map(item => [
+                `"${item.name}"`,
+                `"${item.description}"`,
+                item.sector,
+                item.economicValue,
+                item.growth,
+                item.impact
+            ]);
+            
+            return [headers.join(','), ...rows.map(row => row.join(','))].join('\n');
+        }
+
+        function generatePrintContent() {
+            return `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Global Innovation Dashboard Report</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; margin: 20px; }
+                        .header { text-align: center; margin-bottom: 30px; }
+                        .section { margin-bottom: 20px; }
+                        .item { margin-bottom: 15px; padding: 10px; border: 1px solid #ddd; }
+                        .stats { display: flex; justify-content: space-around; margin: 20px 0; }
+                        .stat { text-align: center; }
+                        @media print { .no-print { display: none; } }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <h1>Global Innovation Dashboard</h1>
+                        <p>รายงานการเคลื่อนไหวของนวัตกรรมโลก</p>
+                        <p>สร้างเมื่อ: ${new Date().toLocaleDateString('th-TH')}</p>
+                    </div>
+                    
+                    <div class="stats">
+                        <div class="stat">
+                            <h3>${currentInnovations.length}</h3>
+                            <p>นวัตกรรมปัจจุบัน</p>
+                        </div>
+                        <div class="stat">
+                            <h3>${futurePredictions.length}</h3>
+                            <p>การคาดการณ์อนาคต</p>
+                        </div>
+                        <div class="stat">
+                            <h3>${[...new Set(currentInnovations.map(i => i.sector))].length}</h3>
+                            <p>สาขาอุตสาหกรรม</p>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <h2>นวัตกรรมปัจจุบัน</h2>
+                        ${currentInnovations.map(item => `
+                            <div class="item">
+                                <h3>${item.name}</h3>
+                                <p><strong>สาขา:</strong> ${item.sector}</p>
+                                <p><strong>คำอธิบาย:</strong> ${item.description}</p>
+                                <p><strong>มูลค่า:</strong> ${item.economicValue}</p>
+                                <p><strong>การเติบโต:</strong> ${item.growth}%</p>
+                            </div
