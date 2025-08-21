@@ -293,6 +293,9 @@
                         <button type="button" class="btn btn-outline-light" onclick="toggleTheme()">
                             <i class="bi bi-moon" id="themeIcon"></i> <span id="themeText">ธีมมืด</span>
                         </button>
+                        <button type="button" class="btn btn-outline-light" onclick="exportAllCharts()">
+                            <i class="bi bi-download"></i> Export กราฟ
+                        </button>
                     </div>
                     <div>
                         <small class="text-light">อัพเดทล่าสุด: <span id="lastUpdate">กำลังโหลด...</span></small>
@@ -386,8 +389,16 @@
             
             <!-- Growth Chart -->
             <div class="card mt-4" id="innovationChartCard">
-                <div class="card-header">
+                <div class="card-header d-flex justify-content-between align-items-center">
                     <h5><i class="bi bi-bar-chart"></i> การเติบโตของนวัตกรรมปัจจุบัน</h5>
+                    <div class="btn-group" role="group">
+                        <button class="btn btn-sm btn-outline-primary" onclick="exportChartAsImage('innovationGrowthChart')">
+                            <i class="bi bi-image"></i> Export รูป
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="exportChartAsPDF('innovationGrowthChart')">
+                            <i class="bi bi-file-pdf"></i> Export PDF
+                        </button>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="chart-container">
@@ -413,15 +424,23 @@
             
             <!-- Predictions Chart -->
             <div class="card mt-4" id="predictionChartCard">
-                <div class="card-header">
+                <div class="card-header d-flex justify-content-between align-items-center">
                     <h5><i class="bi bi-graph-up-arrow"></i> การเคลื่อนไหวของนวัตกรรมในอนาคต 4-5 ปี</h5>
+                    <div class="btn-group" role="group">
+                        <button class="btn btn-sm btn-outline-primary" onclick="exportChartAsImage('futurePredictionsChart')">
+                            <i class="bi bi-image"></i> Export รูป
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="exportChartAsPDF('futurePredictionsChart')">
+                            <i class="bi bi-file-pdf"></i> Export PDF
+                        </button>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="chart-container">
                         <canvas id="futurePredictionsChart"></canvas>
                     </div>
                 </div>
-            </div>
+            </div></div>
         </section>
     </div>
 
@@ -789,6 +808,14 @@
                     plugins: {
                         legend: {
                             display: true
+                        },
+                        title: {
+                            display: true,
+                            text: 'อัตราการเติบโตของนวัตกรรมปัจจุบัน (%)',
+                            font: {
+                                size: 16,
+                                weight: 'bold'
+                            }
                         }
                     },
                     scales: {
@@ -808,44 +835,124 @@
                 }
             });
 
-            // Future Predictions Chart
+            // Future Predictions Chart - เปลี่ยนเป็น Line Chart
             const ctx2 = document.getElementById('futurePredictionsChart').getContext('2d');
+            
+            // สร้างข้อมูลสำหรับ timeline 4-5 ปีข้างหน้า
+            const years = ['2025', '2026', '2027', '2028', '2029'];
+            const predictionData = futurePredictions.map(prediction => {
+                const baseValue = parseFloat(prediction.predictedValue.replace(/[^0-9.]/g, ''));
+                const probability = prediction.probability / 100;
+                
+                // สร้างเส้นโค้งการเติบโตตามความน่าจะเป็น
+                return years.map((year, index) => {
+                    const yearFactor = (index + 1) / 5; // 0.2, 0.4, 0.6, 0.8, 1.0
+                    const growthFactor = Math.pow(probability, 0.5); // ปรับค่าตามความน่าจะเป็น
+                    return baseValue * yearFactor * growthFactor;
+                });
+            });
+
+            const colors = [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)', 
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)'
+            ];
+
+            const backgroundColors = [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)'
+            ];
+
             predictionChart = new Chart(ctx2, {
-                type: 'radar',
+                type: 'line',
                 data: {
-                    labels: futurePredictions.map(p => p.name.length > 15 ? p.name.substring(0, 15) + '...' : p.name),
-                    datasets: [{
-                        label: 'ความน่าจะเป็น (%)',
-                        data: futurePredictions.map(p => p.probability),
-                        fill: true,
-                        backgroundColor: 'rgba(255, 193, 7, 0.2)',
-                        borderColor: 'rgba(255, 193, 7, 1)',
-                        pointBackgroundColor: 'rgba(255, 193, 7, 1)',
+                    labels: years,
+                    datasets: futurePredictions.map((prediction, index) => ({
+                        label: prediction.name,
+                        data: predictionData[index],
+                        borderColor: colors[index],
+                        backgroundColor: backgroundColors[index],
+                        borderWidth: 3,
+                        fill: false,
+                        tension: 0.4,
+                        pointBackgroundColor: colors[index],
                         pointBorderColor: '#fff',
-                        pointHoverBackgroundColor: '#fff',
-                        pointHoverBorderColor: 'rgba(255, 193, 7, 1)'
-                    }]
+                        pointBorderWidth: 2,
+                        pointRadius: 6,
+                        pointHoverRadius: 8
+                    }))
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    elements: {
-                        line: {
-                            borderWidth: 3
-                        }
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
                     },
                     plugins: {
+                        title: {
+                            display: true,
+                            text: 'การคาดการณ์มูลค่าทางเศรษฐกิจของนวัตกรรมในอนาคต 4-5 ปี',
+                            font: {
+                                size: 16,
+                                weight: 'bold'
+                            }
+                        },
                         legend: {
-                            position: 'top'
+                            position: 'top',
+                            labels: {
+                                usePointStyle: true,
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                title: function(context) {
+                                    return 'ปี ' + context[0].label;
+                                },
+                                label: function(context) {
+                                    const prediction = futurePredictions[context.datasetIndex];
+                                    return [
+                                        `${context.dataset.label}: ${context.parsed.y.toFixed(0)}B`,
+                                        `ความน่าจะเป็น: ${prediction.probability}%`
+                                    ];
+                                }
+                            }
                         }
                     },
                     scales: {
-                        r: {
-                            angleLines: {
-                                display: false
+                        x: {
+                            display: true,
+                            title: {
+                                display: true,
+                                text: 'ปี (ค.ศ.)'
                             },
-                            suggestedMin: 0,
-                            suggestedMax: 100
+                            grid: {
+                                display: true
+                            }
+                        },
+                        y: {
+                            display: true,
+                            title: {
+                                display: true,
+                                text: 'มูลค่าทางเศรษฐกิจ (พันล้านดอลลาร์)'
+                            },
+                            beginAtZero: true,
+                            grid: {
+                                display: true
+                            }
+                        }
+                    },
+                    elements: {
+                        point: {
+                            hoverBorderWidth: 3
                         }
                     }
                 }
@@ -1115,7 +1222,22 @@
                 }
                 
                 if (predictionChart) {
-                    predictionChart.data.datasets[0].data = futurePredictions.map(p => p.probability);
+                    // Update prediction chart with new data
+                    const years = ['2025', '2026', '2027', '2028', '2029'];
+                    const predictionData = futurePredictions.map(prediction => {
+                        const baseValue = parseFloat(prediction.predictedValue.replace(/[^0-9.]/g, ''));
+                        const probability = prediction.probability / 100;
+                        
+                        return years.map((year, index) => {
+                            const yearFactor = (index + 1) / 5;
+                            const growthFactor = Math.pow(probability, 0.5);
+                            return baseValue * yearFactor * growthFactor;
+                        });
+                    });
+                    
+                    predictionChart.data.datasets.forEach((dataset, index) => {
+                        dataset.data = predictionData[index];
+                    });
                     predictionChart.update();
                 }
                 
@@ -1177,7 +1299,243 @@
             }, 5000);
         }
 
-        // Keyboard shortcuts
+        // Export chart functions
+        function exportChartAsImage(chartId) {
+            const canvas = document.getElementById(chartId);
+            const chart = Chart.getChart(canvas);
+            
+            if (!chart) {
+                showNotification('ไม่พบกราฟที่ต้องการ export', 'error');
+                return;
+            }
+
+            try {
+                // Create a temporary canvas with white background
+                const tempCanvas = document.createElement('canvas');
+                const tempCtx = tempCanvas.getContext('2d');
+                
+                tempCanvas.width = canvas.width;
+                tempCanvas.height = canvas.height;
+                
+                // Fill with white background
+                tempCtx.fillStyle = '#ffffff';
+                tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+                
+                // Draw the chart on top
+                tempCtx.drawImage(canvas, 0, 0);
+                
+                // Convert to image and download
+                const imageURL = tempCanvas.toDataURL('image/png', 1.0);
+                const link = document.createElement('a');
+                link.download = `${chartId}_${new Date().getTime()}.png`;
+                link.href = imageURL;
+                
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                showNotification('Export รูปภาพเรียบร้อย', 'success');
+            } catch (error) {
+                console.error('Export error:', error);
+                showNotification('เกิดข้อผิดพลาดในการ export รูปภาพ', 'error');
+            }
+        }
+
+        function exportChartAsPDF(chartId) {
+            const canvas = document.getElementById(chartId);
+            const chart = Chart.getChart(canvas);
+            
+            if (!chart) {
+                showNotification('ไม่พบกราฟที่ต้องการ export', 'error');
+                return;
+            }
+
+            try {
+                // Create a new window for PDF generation
+                const printWindow = window.open('', '_blank');
+                
+                // Get chart title
+                const chartTitle = chart.options.plugins?.title?.text || 'กราฟ Global Innovation Dashboard';
+                
+                // Create a temporary canvas with white background
+                const tempCanvas = document.createElement('canvas');
+                const tempCtx = tempCanvas.getContext('2d');
+                
+                tempCanvas.width = canvas.width;
+                tempCanvas.height = canvas.height;
+                
+                // Fill with white background
+                tempCtx.fillStyle = '#ffffff';
+                tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+                
+                // Draw the chart on top
+                tempCtx.drawImage(canvas, 0, 0);
+                
+                const imageURL = tempCanvas.toDataURL('image/png', 1.0);
+                
+                const pdfContent = `
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <title>${chartTitle}</title>
+                        <style>
+                            body {
+                                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                                margin: 0;
+                                padding: 20px;
+                                background: white;
+                            }
+                            .header {
+                                text-align: center;
+                                margin-bottom: 30px;
+                                border-bottom: 2px solid #007bff;
+                                padding-bottom: 20px;
+                            }
+                            .header h1 {
+                                color: #007bff;
+                                margin: 0;
+                                font-size: 24px;
+                            }
+                            .header p {
+                                color: #666;
+                                margin: 10px 0 0 0;
+                                font-size: 14px;
+                            }
+                            .chart-container {
+                                text-align: center;
+                                margin: 20px 0;
+                            }
+                            .chart-title {
+                                font-size: 18px;
+                                font-weight: bold;
+                                margin-bottom: 20px;
+                                color: #333;
+                            }
+                            .chart-image {
+                                max-width: 100%;
+                                height: auto;
+                                border: 1px solid #ddd;
+                                border-radius: 8px;
+                                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+                            }
+                            .metadata {
+                                margin-top: 30px;
+                                padding-top: 20px;
+                                border-top: 1px solid #eee;
+                                font-size: 12px;
+                                color: #666;
+                            }
+                            .metadata table {
+                                width: 100%;
+                                border-collapse: collapse;
+                            }
+                            .metadata td {
+                                padding: 5px 10px;
+                                border: 1px solid #eee;
+                            }
+                            .metadata td:first-child {
+                                background: #f8f9fa;
+                                font-weight: bold;
+                                width: 150px;
+                            }
+                            @media print {
+                                body { print-color-adjust: exact; }
+                                .no-print { display: none; }
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="header">
+                            <h1>Global Innovation Dashboard</h1>
+                            <p>ระบบติดตามและวิเคราะห์การเคลื่อนไหวของนวัตกรรมโลก</p>
+                        </div>
+                        
+                        <div class="chart-container">
+                            <div class="chart-title">${chartTitle}</div>
+                            <img src="${imageURL}" alt="${chartTitle}" class="chart-image">
+                        </div>
+                        
+                        <div class="metadata">
+                            <h3>ข้อมูลรายงาน</h3>
+                            <table>
+                                <tr>
+                                    <td>วันที่สร้างรายงาน</td>
+                                    <td>${new Date().toLocaleDateString('th-TH', {
+                                        year: 'numeric',
+                                        month: 'long', 
+                                        day: 'numeric',
+                                        hour: '2-digit',
+                                        minute: '2-digit'
+                                    })}</td>
+                                </tr>
+                                <tr>
+                                    <td>ประเภทกราฟ</td>
+                                    <td>${chart.config.type === 'bar' ? 'แผนภูมิแท่ง' : 
+                                         chart.config.type === 'line' ? 'แผนภูมิเส้น' : 
+                                         chart.config.type === 'radar' ? 'แผนภูมิเรดาร์' : 'อื่นๆ'}</td>
+                                </tr>
+                                <tr>
+                                    <td>จำนวนข้อมูล</td>
+                                    <td>${chart.data.labels.length} รายการ</td>
+                                </tr>
+                                <tr>
+                                    <td>แหล่งข้อมูล</td>
+                                    <td>Global Innovation Dashboard - AI-Powered Analysis</td>
+                                </tr>
+                                <tr>
+                                    <td>การใช้งาน</td>
+                                    <td>เอกสารนี้สร้างขึ้นสำหรับการวิเคราะห์และนำเสนอข้อมูลนวัตกรรมโลก</td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div style="margin-top: 40px; text-align: center; color: #999; font-size: 11px;">
+                            © 2025 Global Innovation Dashboard - สร้างด้วย AI และเทคโนโลยีล้ำสมัย
+                        </div>
+                    </body>
+                    </html>
+                `;
+                
+                printWindow.document.write(pdfContent);
+                printWindow.document.close();
+                printWindow.focus();
+                
+                // Wait for image to load then print
+                setTimeout(() => {
+                    printWindow.print();
+                    setTimeout(() => {
+                        printWindow.close();
+                    }, 1000);
+                }, 500);
+                
+                showNotification('กำลังสร้าง PDF... กรุณารอสักครู่', 'info');
+                
+            } catch (error) {
+                console.error('PDF export error:', error);
+                showNotification('เกิดข้อผิดพลาดในการสร้าง PDF', 'error');
+            }
+        }
+
+        // Enhanced export all charts function
+        function exportAllCharts() {
+            const charts = ['innovationGrowthChart', 'futurePredictionsChart'];
+            let exportCount = 0;
+            
+            showNotification('กำลัง export กราฟทั้งหมด...', 'info');
+            
+            charts.forEach((chartId, index) => {
+                setTimeout(() => {
+                    exportChartAsImage(chartId);
+                    exportCount++;
+                    
+                    if (exportCount === charts.length) {
+                        setTimeout(() => {
+                            showNotification('Export กราฟทั้งหมดเรียบร้อย', 'success');
+                        }, 1000);
+                    }
+                }, index * 1000);
+            });
+        }
         document.addEventListener('keydown', function(event) {
             if ((event.ctrlKey || event.metaKey) && event.key === '/') {
                 event.preventDefault();
