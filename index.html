@@ -293,8 +293,8 @@
                         <button type="button" class="btn btn-outline-light" onclick="toggleTheme()">
                             <i class="bi bi-moon" id="themeIcon"></i> <span id="themeText">ธีมมืด</span>
                         </button>
-                        <button type="button" class="btn btn-outline-light" onclick="exportAllCharts()">
-                            <i class="bi bi-download"></i> Export กราฟ
+                        <button type="button" class="btn btn-outline-light" onclick="exportFullPageAsPDF()">
+                            <i class="bi bi-file-pdf"></i> Export PDF
                         </button>
                     </div>
                     <div>
@@ -391,12 +391,12 @@
             <div class="card mt-4" id="innovationChartCard">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5><i class="bi bi-bar-chart"></i> การเติบโตของนวัตกรรมปัจจุบัน</h5>
-                    <div class="btn-group" role="group">
+                    <div class="btn-group no-print" role="group">
                         <button class="btn btn-sm btn-outline-primary" onclick="exportChartAsImage('innovationGrowthChart')">
                             <i class="bi bi-image"></i> Export รูป
                         </button>
-                        <button class="btn btn-sm btn-outline-danger" onclick="exportChartAsPDF('innovationGrowthChart')">
-                            <i class="bi bi-file-pdf"></i> Export PDF
+                        <button class="btn btn-sm btn-outline-success" onclick="printChart('innovationGrowthChart')">
+                            <i class="bi bi-printer"></i> Print
                         </button>
                     </div>
                 </div>
@@ -426,12 +426,12 @@
             <div class="card mt-4" id="predictionChartCard">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5><i class="bi bi-graph-up-arrow"></i> การเคลื่อนไหวของนวัตกรรมในอนาคต 4-5 ปี</h5>
-                    <div class="btn-group" role="group">
+                    <div class="btn-group no-print" role="group">
                         <button class="btn btn-sm btn-outline-primary" onclick="exportChartAsImage('futurePredictionsChart')">
                             <i class="bi bi-image"></i> Export รูป
                         </button>
-                        <button class="btn btn-sm btn-outline-danger" onclick="exportChartAsPDF('futurePredictionsChart')">
-                            <i class="bi bi-file-pdf"></i> Export PDF
+                        <button class="btn btn-sm btn-outline-success" onclick="printChart('futurePredictionsChart')">
+                            <i class="bi bi-printer"></i> Print
                         </button>
                     </div>
                 </div>
@@ -505,13 +505,13 @@
             },
             {
                 id: 3,
-                name: "Biotechnology",
-                description: "เทคโนโลยี: Gene Editing, Personalized Medicine, Synthetic Biology",
-                sector: "Biotech",
-                economicValue: "$110B",
+                name: "Vertical Farming Systems",
+                description: "ระบบเกษตรแนวตั้งในเมืองเพื่อความมั่นคงทางอาหาร",
+                sector: "Agriculture",
+                economicValue: "$35B",
                 trend: "กำลังเติบโต",
-                growth: 68,
-                companies: ["Moderna, CRISPR, Illumina, Ginkgo Bioworks"],
+                growth: 65,
+                companies: ["AeroFarms", "Plenty", "Bowery"],
                 impact: "Medium"
             },
             {
@@ -571,14 +571,14 @@
             },
             {
                 id: 9,
-                name: "Cybersecurity",
-                description: "เทคโนโลยี: Zero Trust, AI-Powered Security, Cloud",
+                name: "Personalized Genetic Medicine",
+                description: "การรักษาที่ปรับแต่งตามโปรไฟล์พันธุกรรมของแต่ละบุคคล",
                 sector: "Healthcare",
                 economicValue: "$75B",
                 trend: "กำลังเติบโต",
-                growth: 63,
+                growth: 83,
                 companies: ["Illumina", "23andMe", "Foundation Medicine"],
-                impact: "Medium"
+                impact: "High"
             },
             {
                 id: 10,
@@ -1299,7 +1299,183 @@
             }, 5000);
         }
 
-        // Export chart functions
+        // Enhanced full page PDF export
+        function exportFullPageAsPDF() {
+            showNotification('🔄 กำลังเตรียมรายงาน PDF ฉบับสมบูรณ์...', 'info');
+            
+            // Temporarily hide charts that might not print well and show static versions
+            const originalChartDisplay = [];
+            
+            // Add print-ready timestamp
+            const printTimestamp = document.createElement('div');
+            printTimestamp.id = 'print-timestamp';
+            printTimestamp.className = 'text-center mt-3 mb-3';
+            printTimestamp.innerHTML = `
+                <div class="alert alert-info">
+                    <strong>📊 Global Innovation Dashboard - Full Report</strong><br>
+                    สร้างเมื่อ: ${new Date().toLocaleString('th-TH', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        second: '2-digit'
+                    })}<br>
+                    สถานะ: 🌐 Online Mode - Real-time Data
+                </div>
+            `;
+            
+            // Insert timestamp after header
+            const header = document.querySelector('.header');
+            header.insertAdjacentElement('afterend', printTimestamp);
+            
+            // Add summary section for PDF
+            const summarySection = document.createElement('div');
+            summarySection.id = 'pdf-summary';
+            summarySection.className = 'container mb-4';
+            summarySection.innerHTML = `
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5><i class="bi bi-clipboard-data"></i> สรุปผลการวิเคราะห์</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h6>ข้อมูลทั่วไป</h6>
+                                <ul>
+                                    <li>จำนวนนวัตกรรมปัจจุบัน: ${currentInnovations.length} รายการ</li>
+                                    <li>การคาดการณ์อนาคต: ${futurePredictions.length} รายการ</li>
+                                    <li>สาขาอุตสาหกรรม: ${[...new Set(currentInnovations.map(i => i.sector))].length} สาขา</li>
+                                    <li>มูลค่ารวม: ${document.getElementById('totalValue').textContent}</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h6>ข้อมูลเชิงลึก</h6>
+                                <ul>
+                                    <li>การเติบโตเฉลี่ย: ${(currentInnovations.reduce((sum, i) => sum + i.growth, 0) / currentInnovations.length).toFixed(1)}%</li>
+                                    <li>ความน่าจะเป็นเฉลี่ย: ${(futurePredictions.reduce((sum, p) => sum + p.probability, 0) / futurePredictions.length).toFixed(1)}%</li>
+                                    <li>สาขาที่มีศักยภาพสูงสุด: Healthcare & Technology</li>
+                                    <li>แนวโน้ม: การเติบโตในทิศทางบวกทุกสาขา</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Insert summary before innovations section
+            const innovationsSection = document.querySelector('section');
+            innovationsSection.insertAdjacentElement('beforebegin', summarySection);
+            
+            setTimeout(() => {
+                // Trigger print dialog
+                window.print();
+                
+                // Clean up after print
+                setTimeout(() => {
+                    if (document.getElementById('print-timestamp')) {
+                        document.getElementById('print-timestamp').remove();
+                    }
+                    if (document.getElementById('pdf-summary')) {
+                        document.getElementById('pdf-summary').remove();
+                    }
+                    showNotification('✅ รายงาน PDF พร้อมแล้ว! กรุณาเลือก "Save as PDF" ในหน้าต่าง Print', 'success');
+                }, 1000);
+            }, 500);
+        }
+
+        // Print individual chart
+        function printChart(chartId) {
+            const canvas = document.getElementById(chartId);
+            const chart = Chart.getChart(canvas);
+            
+            if (!chart) {
+                showNotification('ไม่พบกราฟที่ต้องการพิมพ์', 'error');
+                return;
+            }
+
+            const chartTitle = chart.options.plugins?.title?.text || 'กราฟ Global Innovation Dashboard';
+            
+            // Create print window
+            const printWindow = window.open('', '_blank', 'width=800,height=600');
+            
+            // Create a temporary canvas with white background
+            const tempCanvas = document.createElement('canvas');
+            const tempCtx = tempCanvas.getContext('2d');
+            
+            tempCanvas.width = canvas.width;
+            tempCanvas.height = canvas.height;
+            
+            // Fill with white background
+            tempCtx.fillStyle = '#ffffff';
+            tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+            
+            // Draw the chart on top
+            tempCtx.drawImage(canvas, 0, 0);
+            
+            const imageURL = tempCanvas.toDataURL('image/png', 1.0);
+            
+            const printContent = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>${chartTitle}</title>
+                    <style>
+                        body {
+                            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                            margin: 0;
+                            padding: 20px;
+                            background: white;
+                        }
+                        .header {
+                            text-align: center;
+                            margin-bottom: 30px;
+                            border-bottom: 2px solid #007bff;
+                            padding-bottom: 20px;
+                        }
+                        .chart-container {
+                            text-align: center;
+                            margin: 20px 0;
+                        }
+                        .chart-image {
+                            max-width: 100%;
+                            height: auto;
+                            border: 1px solid #ddd;
+                            border-radius: 8px;
+                        }
+                        @media print {
+                            body { print-color-adjust: exact; }
+                            @page { margin: 1cm; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="header">
+                        <h1>Global Innovation Dashboard</h1>
+                        <h2>${chartTitle}</h2>
+                        <p>สร้างเมื่อ: ${new Date().toLocaleString('th-TH')}</p>
+                    </div>
+                    <div class="chart-container">
+                        <img src="${imageURL}" alt="${chartTitle}" class="chart-image">
+                    </div>
+                </body>
+                </html>
+            `;
+            
+            printWindow.document.write(printContent);
+            printWindow.document.close();
+            printWindow.focus();
+            
+            setTimeout(() => {
+                printWindow.print();
+                setTimeout(() => {
+                    printWindow.close();
+                }, 1000);
+            }, 500);
+            
+            showNotification('🖨️ กำลังเตรียมพิมพ์กราฟ...', 'info');
+        }
+        // Export chart as image (keep existing functionality)
         function exportChartAsImage(chartId) {
             const canvas = document.getElementById(chartId);
             const chart = Chart.getChart(canvas);
@@ -1341,204 +1517,16 @@
             }
         }
 
+        // Legacy function - kept for compatibility
         function exportChartAsPDF(chartId) {
-            const canvas = document.getElementById(chartId);
-            const chart = Chart.getChart(canvas);
-            
-            if (!chart) {
-                showNotification('ไม่พบกราฟที่ต้องการ export', 'error');
-                return;
-            }
-
-            try {
-                // Create a new window for PDF generation
-                const printWindow = window.open('', '_blank');
-                
-                // Get chart title
-                const chartTitle = chart.options.plugins?.title?.text || 'กราฟ Global Innovation Dashboard';
-                
-                // Create a temporary canvas with white background
-                const tempCanvas = document.createElement('canvas');
-                const tempCtx = tempCanvas.getContext('2d');
-                
-                tempCanvas.width = canvas.width;
-                tempCanvas.height = canvas.height;
-                
-                // Fill with white background
-                tempCtx.fillStyle = '#ffffff';
-                tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
-                
-                // Draw the chart on top
-                tempCtx.drawImage(canvas, 0, 0);
-                
-                const imageURL = tempCanvas.toDataURL('image/png', 1.0);
-                
-                const pdfContent = `
-                    <!DOCTYPE html>
-                    <html>
-                    <head>
-                        <title>${chartTitle}</title>
-                        <style>
-                            body {
-                                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                                margin: 0;
-                                padding: 20px;
-                                background: white;
-                            }
-                            .header {
-                                text-align: center;
-                                margin-bottom: 30px;
-                                border-bottom: 2px solid #007bff;
-                                padding-bottom: 20px;
-                            }
-                            .header h1 {
-                                color: #007bff;
-                                margin: 0;
-                                font-size: 24px;
-                            }
-                            .header p {
-                                color: #666;
-                                margin: 10px 0 0 0;
-                                font-size: 14px;
-                            }
-                            .chart-container {
-                                text-align: center;
-                                margin: 20px 0;
-                            }
-                            .chart-title {
-                                font-size: 18px;
-                                font-weight: bold;
-                                margin-bottom: 20px;
-                                color: #333;
-                            }
-                            .chart-image {
-                                max-width: 100%;
-                                height: auto;
-                                border: 1px solid #ddd;
-                                border-radius: 8px;
-                                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-                            }
-                            .metadata {
-                                margin-top: 30px;
-                                padding-top: 20px;
-                                border-top: 1px solid #eee;
-                                font-size: 12px;
-                                color: #666;
-                            }
-                            .metadata table {
-                                width: 100%;
-                                border-collapse: collapse;
-                            }
-                            .metadata td {
-                                padding: 5px 10px;
-                                border: 1px solid #eee;
-                            }
-                            .metadata td:first-child {
-                                background: #f8f9fa;
-                                font-weight: bold;
-                                width: 150px;
-                            }
-                            @media print {
-                                body { print-color-adjust: exact; }
-                                .no-print { display: none; }
-                            }
-                        </style>
-                    </head>
-                    <body>
-                        <div class="header">
-                            <h1>Global Innovation Dashboard</h1>
-                            <p>ระบบติดตามและวิเคราะห์การเคลื่อนไหวของนวัตกรรมโลก</p>
-                        </div>
-                        
-                        <div class="chart-container">
-                            <div class="chart-title">${chartTitle}</div>
-                            <img src="${imageURL}" alt="${chartTitle}" class="chart-image">
-                        </div>
-                        
-                        <div class="metadata">
-                            <h3>ข้อมูลรายงาน</h3>
-                            <table>
-                                <tr>
-                                    <td>วันที่สร้างรายงาน</td>
-                                    <td>${new Date().toLocaleDateString('th-TH', {
-                                        year: 'numeric',
-                                        month: 'long', 
-                                        day: 'numeric',
-                                        hour: '2-digit',
-                                        minute: '2-digit'
-                                    })}</td>
-                                </tr>
-                                <tr>
-                                    <td>ประเภทกราฟ</td>
-                                    <td>${chart.config.type === 'bar' ? 'แผนภูมิแท่ง' : 
-                                         chart.config.type === 'line' ? 'แผนภูมิเส้น' : 
-                                         chart.config.type === 'radar' ? 'แผนภูมิเรดาร์' : 'อื่นๆ'}</td>
-                                </tr>
-                                <tr>
-                                    <td>จำนวนข้อมูล</td>
-                                    <td>${chart.data.labels.length} รายการ</td>
-                                </tr>
-                                <tr>
-                                    <td>แหล่งข้อมูล</td>
-                                    <td>Global Innovation Dashboard - Real-time AI Analysis</td>
-                                </tr>
-                                <tr>
-                                    <td>สถานะระบบ</td>
-                                    <td>🌐 Online Mode - Live Data Feed</td>
-                                </tr>
-                                <tr>
-                                    <td>การใช้งาน</td>
-                                    <td>เอกสารนี้สร้างขึ้นสำหรับการวิเคราะห์และนำเสนอข้อมูลนวัตกรรมโลก</td>
-                                </tr>
-                            </table>
-                        </div>
-
-                        <div style="margin-top: 40px; text-align: center; color: #999; font-size: 11px;">
-                            © 2025 Global Innovation Dashboard - เชื่อมต่อข้อมูลโลกแบบเรียลไทม์ด้วย AI และเทคโนโลยีล้ำสมัย
-                        </div>
-                    </body>
-                    </html>
-                `;
-                
-                printWindow.document.write(pdfContent);
-                printWindow.document.close();
-                printWindow.focus();
-                
-                // Wait for image to load then print
-                setTimeout(() => {
-                    printWindow.print();
-                    setTimeout(() => {
-                        printWindow.close();
-                    }, 1000);
-                }, 500);
-                
-                showNotification('กำลังสร้าง PDF... กรุณารอสักครู่', 'info');
-                
-            } catch (error) {
-                console.error('PDF export error:', error);
-                showNotification('เกิดข้อผิดพลาดในการสร้าง PDF', 'error');
-            }
+            // Redirect to full page export
+            exportFullPageAsPDF();
         }
 
-        // Enhanced export all charts function
+        // Legacy function - kept for compatibility
         function exportAllCharts() {
-            const charts = ['innovationGrowthChart', 'futurePredictionsChart'];
-            let exportCount = 0;
-            
-            showNotification('กำลัง export กราฟทั้งหมด...', 'info');
-            
-            charts.forEach((chartId, index) => {
-                setTimeout(() => {
-                    exportChartAsImage(chartId);
-                    exportCount++;
-                    
-                    if (exportCount === charts.length) {
-                        setTimeout(() => {
-                            showNotification('Export กราฟทั้งหมดเรียบร้อย', 'success');
-                        }, 1000);
-                    }
-                }, index * 1000);
-            });
+            // Redirect to full page export
+            exportFullPageAsPDF();
         }
         document.addEventListener('keydown', function(event) {
             if ((event.ctrlKey || event.metaKey) && event.key === '/') {
