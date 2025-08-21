@@ -570,7 +570,9 @@
                             }
                         }
                     }
-                });
+            </script>
+</body>
+</html>
             }
 
             // Future Predictions Chart - Line Chart
@@ -733,4 +735,292 @@
             const filtered = currentInnovations.filter(i => 
                 i.name.toLowerCase().includes(query) || 
                 i.description.toLowerCase().includes(query) ||
-                i.sector.toLowerCase().includes
+                i.sector.toLowerCase().includes(query)
+            );
+            
+            renderInnovations(filtered);
+            
+            const resultsDiv = document.getElementById('searchResults');
+            if (query) {
+                resultsDiv.innerHTML = `<div class="alert alert-info mt-3">พบ ${filtered.length} รายการที่ตรงกับ "${query}"</div>`;
+            } else {
+                resultsDiv.innerHTML = '';
+                renderInnovations();
+            }
+        }
+
+        // Filter by sector
+        function filterBySector() {
+            const sector = document.getElementById('sectorFilter').value;
+            if (sector) {
+                const filtered = currentInnovations.filter(i => i.sector === sector);
+                renderInnovations(filtered);
+            } else {
+                renderInnovations();
+            }
+        }
+
+        // Sort functions
+        function sortByValue() {
+            const sorted = [...currentInnovations].sort((a, b) => {
+                const aVal = parseInt(a.economicValue.replace(/\D/g, ''));
+                const bVal = parseInt(b.economicValue.replace(/\D/g, ''));
+                return bVal - aVal;
+            });
+            renderInnovations(sorted);
+        }
+
+        function sortByName() {
+            const sorted = [...currentInnovations].sort((a, b) => a.name.localeCompare(b.name));
+            renderInnovations(sorted);
+        }
+
+        // Toggle theme
+        function toggleTheme() {
+            document.body.classList.toggle('bg-dark');
+            document.body.classList.toggle('text-light');
+            
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                card.classList.toggle('bg-dark');
+                card.classList.toggle('text-light');
+            });
+        }
+
+        // Refresh data
+        function refreshData() {
+            renderInnovations();
+            renderPredictions();
+            updateTime();
+            
+            // Show success message
+            showSuccessMessage('ข้อมูลได้รับการอัพเดทแล้ว!');
+        }
+
+        // Update time
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleString('th-TH');
+            const dateString = now.toLocaleDateString('th-TH');
+            
+            const lastUpdateEl = document.getElementById('lastUpdate');
+            const footerDateEl = document.getElementById('footerDate');
+            
+            if (lastUpdateEl) lastUpdateEl.textContent = timeString;
+            if (footerDateEl) footerDateEl.textContent = dateString;
+        }
+
+        // Save as Image function
+        function saveAsImage(type) {
+            // Show loading
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'position-fixed top-50 start-50 translate-middle';
+            loadingDiv.style.zIndex = '9999';
+            loadingDiv.innerHTML = `
+                <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;">
+                    <span class="visually-hidden">กำลังบันทึก...</span>
+                </div>
+            `;
+            document.body.appendChild(loadingDiv);
+
+            let elementToCapture;
+            let filename;
+
+            if (type === 'full') {
+                elementToCapture = document.body;
+                filename = 'global-innovation-dashboard-full.png';
+            } else if (type === 'stats') {
+                const statsContainer = document.createElement('div');
+                statsContainer.style.padding = '20px';
+                statsContainer.style.background = 'white';
+                statsContainer.innerHTML = `
+                    <h2 style="text-align: center; color: #007bff; margin-bottom: 30px;">
+                        <i class="bi bi-globe"></i> Global Innovation Dashboard - Statistics
+                    </h2>
+                    <div style="display: flex; justify-content: space-around; margin-bottom: 30px;">
+                        ${document.querySelector('.row.mb-4').innerHTML}
+                    </div>
+                    <p style="text-align: center; color: #666;">
+                        Generated: ${new Date().toLocaleString('th-TH')}
+                    </p>
+                `;
+                document.body.appendChild(statsContainer);
+                elementToCapture = statsContainer;
+                filename = 'global-innovation-stats.png';
+            }
+
+            // Use html2canvas to capture
+            html2canvas(elementToCapture, {
+                scale: 2,
+                logging: false,
+                useCORS: true,
+                backgroundColor: '#ffffff'
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = filename;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+
+                loadingDiv.remove();
+                if (type === 'stats' && elementToCapture !== document.body) {
+                    elementToCapture.remove();
+                }
+
+                showSuccessMessage('บันทึกรูปภาพสำเร็จ!');
+            }).catch(error => {
+                console.error('Error saving image:', error);
+                loadingDiv.remove();
+                showErrorMessage('เกิดข้อผิดพลาดในการบันทึกรูปภาพ');
+            });
+        }
+
+        // Save specific chart as image
+        function saveChartAsImage(chartId, chartName) {
+            const chartCanvas = document.getElementById(chartId);
+            if (chartCanvas) {
+                const link = document.createElement('a');
+                link.download = `${chartName}-chart.png`;
+                link.href = chartCanvas.toDataURL('image/png');
+                link.click();
+                showSuccessMessage(`บันทึกกราฟ ${chartName} สำเร็จ!`);
+            }
+        }
+
+        // Save as PDF (placeholder)
+        function saveToPDF() {
+            showInfoMessage('กำลังบันทึกเป็นรูปภาพ... (PDF feature coming soon)');
+            saveAsImage('full');
+        }
+
+        // Save specific section
+        function saveSection(sectionType) {
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'position-fixed top-50 start-50 translate-middle';
+            loadingDiv.style.zIndex = '9999';
+            loadingDiv.innerHTML = `
+                <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;">
+                    <span class="visually-hidden">กำลังบันทึก...</span>
+                </div>
+            `;
+            document.body.appendChild(loadingDiv);
+
+            let sectionElement;
+            let filename;
+
+            const tempDiv = document.createElement('div');
+            tempDiv.style.padding = '20px';
+            tempDiv.style.background = 'white';
+            
+            if (sectionType === 'innovations') {
+                tempDiv.innerHTML = `
+                    <h2 style="text-align: center; color: #007bff; margin-bottom: 20px;">
+                        <i class="bi bi-lightning"></i> นวัตกรรมปัจจุบัน
+                    </h2>
+                    <div class="container">
+                        <div class="row">
+                            ${document.getElementById('innovationsContainer').innerHTML}
+                        </div>
+                    </div>
+                    <p style="text-align: center; margin-top: 20px; color: #666;">
+                        Global Innovation Tracker - ${new Date().toLocaleDateString('th-TH')}
+                    </p>
+                `;
+                filename = 'current-innovations.png';
+            } else if (sectionType === 'predictions') {
+                tempDiv.innerHTML = `
+                    <h2 style="text-align: center; color: #ffc107; margin-bottom: 20px;">
+                        <i class="bi bi-graph-up"></i> การประเมินนวัตกรรมอนาคต 4-5 ปี
+                    </h2>
+                    <div class="container">
+                        <div class="row">
+                            ${document.getElementById('predictionsContainer').innerHTML}
+                        </div>
+                    </div>
+                    <p style="text-align: center; margin-top: 20px; color: #666;">
+                        AI-Powered Predictions - ${new Date().toLocaleDateString('th-TH')}
+                    </p>
+                `;
+                filename = 'future-predictions.png';
+            }
+            
+            document.body.appendChild(tempDiv);
+            sectionElement = tempDiv;
+
+            // Capture section
+            html2canvas(sectionElement, {
+                scale: 2,
+                logging: false,
+                useCORS: true,
+                backgroundColor: '#ffffff'
+            }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = filename;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+
+                loadingDiv.remove();
+                sectionElement.remove();
+                showSuccessMessage(`บันทึก ${sectionType === 'innovations' ? 'นวัตกรรมปัจจุบัน' : 'การประเมินอนาคต'} สำเร็จ!`);
+            }).catch(error => {
+                console.error('Error:', error);
+                loadingDiv.remove();
+                if (sectionElement) sectionElement.remove();
+                showErrorMessage('เกิดข้อผิดพลาด');
+            });
+        }
+
+        // Show success message
+        function showSuccessMessage(message) {
+            showMessage(message, 'success');
+        }
+
+        // Show error message
+        function showErrorMessage(message) {
+            showMessage(message, 'danger');
+        }
+
+        // Show info message
+        function showInfoMessage(message) {
+            showMessage(message, 'info');
+        }
+
+        // Generic show message function
+        function showMessage(message, type) {
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type} alert-dismissible fade show position-fixed top-0 start-50 translate-middle-x mt-3`;
+            alert.style.zIndex = '9999';
+            
+            let icon = '';
+            switch(type) {
+                case 'success': icon = 'check-circle'; break;
+                case 'danger': icon = 'x-circle'; break;
+                case 'info': icon = 'info-circle'; break;
+                default: icon = 'info-circle';
+            }
+            
+            alert.innerHTML = `
+                <i class="bi bi-${icon}"></i> ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            document.body.appendChild(alert);
+            setTimeout(() => {
+                if (alert && alert.parentNode) {
+                    alert.remove();
+                }
+            }, 3000);
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Initializing dashboard...');
+            renderInnovations();
+            renderPredictions();
+            updateTime();
+            
+            // Auto update every 30 seconds
+            setInterval(() => {
+                updateTime();
+            }, 30000);
+            
+            console.log('Dashboard initialized successfully!');
+        });
